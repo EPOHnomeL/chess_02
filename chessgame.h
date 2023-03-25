@@ -5,6 +5,7 @@
 #include <QWidget>
 #include "chessboard.h"
 #include "piece.h"
+#include "mygraphicsscene.h"
 
 class ChessGame : public QObject
 {
@@ -15,9 +16,10 @@ public:
     ChessBoard *getBoard() const;
 
 private slots:
-    void userClickedSquare();
+    void userClickedSquare(Pos pos);
 
 private:
+    Pos select;
     ChessBoard *board;
     Piece *state[8][8];
     bool whitesTurn;

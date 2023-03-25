@@ -14,7 +14,8 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     mygraphicsscene.cpp \
-    piece.cpp
+    piece.cpp \
+    rulemanager.cpp
 
 HEADERS += \
     chessboard.h \
@@ -22,6 +23,7 @@ HEADERS += \
     mainwindow.h \
     mygraphicsscene.h \
     piece.h \
+    rulemanager.h \
     types.h
 
 FORMS += \

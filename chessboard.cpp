@@ -55,3 +55,8 @@ QGraphicsPixmapItem* ChessBoard::putPieceAt(QString piece, Pos pos)
     png->setPos(17 + (pos.y * 100), 13 + (pos.x * 100));
     return png;
 }
+
+MyGraphicsScene *ChessBoard::getScene() const
+{
+    return scene;
+}

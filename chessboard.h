@@ -15,6 +15,8 @@ public:
     explicit ChessBoard(QWidget *parent = nullptr);
     QGraphicsPixmapItem *putPieceAt(QString piece, Pos pos);
 
+    MyGraphicsScene *getScene() const;
+
 private:
     const QColor colors[2] = {QColor(121, 72, 57), QColor(93, 50, 49)};
 
