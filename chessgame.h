@@ -3,9 +3,11 @@
 
 #include <QObject>
 #include <QWidget>
+#include <QVector>
 #include "chessboard.h"
 #include "piece.h"
 #include "mygraphicsscene.h"
+#include "rulemanager.h"
 
 class ChessGame : public QObject
 {
@@ -20,11 +22,12 @@ private slots:
 
 private:
     Pos select;
+    RuleManager *rm;
+    QVector<Pos> *validMoves;
     ChessBoard *board;
     Piece *state[8][8];
     bool whitesTurn;
     void setupPieces();
-    void TryMovePiece(Piece *p, Pos to);
 };
 
 #endif // CHESSGAME_H

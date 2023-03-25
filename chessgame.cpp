@@ -7,6 +7,7 @@ ChessGame::ChessGame(QObject *parent) : QObject(parent)
     setupPieces();
     select = {-1, -1};
     whitesTurn = true;
+    rm = new RuleManager();
     qInfo() << "White's turn";
     connect(board->getScene(),
             (&MyGraphicsScene::userClick),
@@ -32,16 +33,21 @@ void ChessGame::userClickedSquare(Pos pos)
     if (select.x == -1 && select.y == -1)
     {
         if (piece->getColor() != whitesTurn)
-            return;
+            return;        
+//        validMoves = rm->getValidMoves(state, piece);
+//        if(validMoves == nullptr)
+//            return;
         select = pos;
         qInfo() << "selected " << piece->getType() << "at x: " << pos.x << " y: " << pos.y;
         // toggle active square;
-        // get list of valid moves
         // show valid moves tiles
     }
-    else // If something is placed
+    else
     {
-        // check if in list of valid moves
+//        if(validMoves->indexOf(pos) == -1)
+//            return;
+
+//        piece->setPos(pos);
         // clear valid moves tiles
         // move piece
         qInfo() << "to x: " << pos.x << " y: " << pos.y;

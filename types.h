@@ -6,6 +6,13 @@
 struct Pos
 {
     int x, y;
+    bool operator ==(const Pos& a)
+    {
+        if(x == a.x && y == a.y)
+            return true;
+        else
+            return false;
+    }
 };
 
 const QString piecesNames[6] =
