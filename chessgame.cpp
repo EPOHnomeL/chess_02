@@ -35,7 +35,7 @@ void ChessGame::userClickedSquare(Pos pos)
         if (piece->getColor() != whitesTurn)
             return;
         validMoves = rm->getValidMoves(state, piece);
-        if(validMoves == nullptr)
+        if(validMoves->size() == 0)
             return;
         select = pos;
         qInfo() << "selected " << piece->getType() << "at x: " << pos.x << " y: " << pos.y;

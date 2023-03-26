@@ -49,8 +49,10 @@ void RuleManager::getPawnMoves(Piece *b[8][8], Piece *p)
     {
         if(pos.x == 6)
         {
-            validMoves->append((Pos){pos.x-1, pos.y});
-            validMoves->append((Pos){pos.x-2, pos.y});
+            if(b[pos.x-1][pos.y] == nullptr)
+                validMoves->append((Pos){pos.x-1, pos.y});
+            if(b[pos.x-2][pos.y] == nullptr)
+                validMoves->append((Pos){pos.x-2, pos.y});
         } else
         {
             if(pos.x == 0)
@@ -58,7 +60,8 @@ void RuleManager::getPawnMoves(Piece *b[8][8], Piece *p)
                 // Promote pawn!
             } else
             {
-                validMoves->append((Pos){pos.x-1, pos.y});
+                if(b[pos.x-1][pos.y] == nullptr)
+                    validMoves->append((Pos){pos.x-1, pos.y});
             }
         }
         Pos d1 = {pos.x-1, pos.y-1};
@@ -78,9 +81,10 @@ void RuleManager::getPawnMoves(Piece *b[8][8], Piece *p)
     {
         if(pos.x == 1)
         {
-            validMoves->append((Pos){pos.x+1, pos.y});
-            validMoves->append((Pos){pos.x+2, pos.y});
-            return;
+            if(b[pos.x+1][pos.y] == nullptr)
+                validMoves->append((Pos){pos.x+1, pos.y});
+            if(b[pos.x+2][pos.y] == nullptr)
+                validMoves->append((Pos){pos.x+2, pos.y});
         } else
         {
             if(pos.x == 7)
@@ -88,20 +92,20 @@ void RuleManager::getPawnMoves(Piece *b[8][8], Piece *p)
                 // Promote pawn!
             } else
             {
-                validMoves->append((Pos){pos.x+1, pos.y});
-                return;
+                if(b[pos.x+1][pos.y] == nullptr)
+                    validMoves->append((Pos){pos.x+1, pos.y});
             }
         }
         Pos d1 = {pos.x+1, pos.y-1};
         Pos d2 = {pos.x+1, pos.y+1};
 
         if(b[d1.x][d1.y] != nullptr)
-            if(b[d1.x][d1.y]->getColor() == false)
+            if(b[d1.x][d1.y]->getColor() == true)
             {
                 validMoves->append(d1);
             }
         if(b[d2.x][d2.y] != nullptr)
-            if(b[d2.x][d2.y]->getColor() == false)
+            if(b[d2.x][d2.y]->getColor() == true)
             {
                 validMoves->append(d2);
             }
