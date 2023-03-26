@@ -12,11 +12,11 @@ private:
     QVector<Pos> *validMoves;
     Piece *state[8][8];
     void getPawnMoves(Piece *b[8][8], Piece *p);
-    void getRookMoves();
-    void getBishopMoves();
-    void getKingMoves();
-    void getQueenMoves();
-    void getKnightMoves();
+    void getRookMoves(Piece *b[8][8], Piece *p);
+    void getBishopMoves(Piece *b[8][8], Piece *p);
+    void getKingMoves(Piece *b[8][8], Piece *p);
+    void getQueenMoves(Piece *b[8][8], Piece *p);
+    void getKnightMoves(Piece *b[8][8], Piece *p);
 };
 
 #endif // RULEMANAGER_H
