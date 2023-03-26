@@ -8,14 +8,20 @@ Piece::Piece(QString type, Pos pos, bool color, QGraphicsPixmapItem *png)
     this->png = png;
 }
 
+Piece::~Piece()
+{
+    png->~QGraphicsPixmapItem();
+}
+
 const Pos &Piece::getPos() const
 {
     return pos;
 }
 
-void Piece::setPos(const Pos &newPos)
+void Piece::setPos(Pos newPos)
 {
     pos = newPos;
+    png->setPos(17 + (pos.y * 100), 13 + (pos.x * 100));
 }
 
 bool Piece::getColor() const

@@ -14,7 +14,6 @@ class ChessBoard : public QWidget
 public:
     explicit ChessBoard(QWidget *parent = nullptr);
     QGraphicsPixmapItem *putPieceAt(QString piece, Pos pos);
-
     MyGraphicsScene *getScene() const;
 
 private:

@@ -25,18 +25,18 @@ void ChessGame::userClickedSquare(Pos pos)
     // If there are no pieces on the square or nothing selected or the same thing selected or other player's piece
     Piece *piece = state[pos.x][pos.y];
 
-    if ((piece == nullptr && (select.x == -1 && select.y == -1)) || (select.x == pos.x && select.y == pos.y))
+    if ((piece == nullptr && (select == (Pos){-1, -1})) || (select == pos))
     {
         return;
     }
     // If something is selected
-    if (select.x == -1 && select.y == -1)
+    if (select == (Pos){-1, -1})
     {
         if (piece->getColor() != whitesTurn)
-            return;        
-//        validMoves = rm->getValidMoves(state, piece);
-//        if(validMoves == nullptr)
-//            return;
+            return;
+        //        validMoves = rm->getValidMoves(state, piece);
+        //        if(validMoves == nullptr)
+        //            return;
         select = pos;
         qInfo() << "selected " << piece->getType() << "at x: " << pos.x << " y: " << pos.y;
         // toggle active square;
@@ -44,10 +44,22 @@ void ChessGame::userClickedSquare(Pos pos)
     }
     else
     {
-//        if(validMoves->indexOf(pos) == -1)
-//            return;
+        //        if(validMoves->indexOf(pos) == -1)
+        //            return;
+        Piece *enemy = state[pos.x][pos.y];
 
-//        piece->setPos(pos);
+        if(enemy != nullptr){
+            if(enemy->getColor() == whitesTurn){
+                return;
+            }else{
+                delete enemy;
+                state[pos.x][pos.y] = nullptr;
+            }
+        }
+        piece = state[select.x][select.y];
+        piece->setPos(pos);
+        state[pos.x][pos.y] = state[select.x][select.y];
+        state[select.x][select.y] = nullptr;
         // clear valid moves tiles
         // move piece
         qInfo() << "to x: " << pos.x << " y: " << pos.y;
