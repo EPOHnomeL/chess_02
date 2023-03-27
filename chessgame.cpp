@@ -35,18 +35,30 @@ void ChessGame::userClickedSquare(Pos pos)
         if (piece->getColor() != whitesTurn)
             return;
         validMoves = rm->getValidMoves(state, piece);
+        if(validMoves == nullptr)
+            return;
         if(validMoves->size() == 0)
             return;
         select = pos;
+
+        for(int i=0; i<validMoves->size(); i++)
+        {
+            board->toggleSquare(validMoves->at(i));
+        }
         qInfo() << "selected " << piece->getType() << "at x: " << pos.x << " y: " << pos.y;
         // toggle active square;
     }
     else
     {
+
         if(validMoves->indexOf(pos) == -1)
             return;
-        Piece *enemy = state[pos.x][pos.y];
 
+        for(int i=0; i<validMoves->size(); i++)
+        {
+            board->toggleSquare(validMoves->at(i));
+        }
+        Piece *enemy = state[pos.x][pos.y];
         if(enemy != nullptr){
             if(enemy->getColor() == whitesTurn){
                 return;

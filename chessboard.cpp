@@ -60,3 +60,15 @@ MyGraphicsScene *ChessBoard::getScene() const
 {
     return scene;
 }
+
+void ChessBoard::toggleSquare(Pos _pos)
+{
+    Pos pos = {_pos.y, _pos.x};
+    if(squares[pos.x][pos.y]->brush().color() == active[0] || squares[pos.x][pos.y]->brush().color() == active[1])
+    {
+        squares[pos.x][pos.y]->setBrush(QBrush(((pos.x + pos.y) % 2 == 0) ? colors[0]: colors[1]));
+    }else
+    {
+        squares[pos.x][pos.y]->setBrush(QBrush(((pos.x + pos.y) % 2 == 0) ? active[0]: active[1]));
+    }
+}

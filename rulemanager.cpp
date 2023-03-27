@@ -192,6 +192,84 @@ void RuleManager::getRookMoves(Piece *b[8][8], Piece *p)
 
 void RuleManager::getBishopMoves(Piece *b[8][8], Piece *p)
 {
+    Pos pos = p->getPos();
+    for (int ne = 1; ne < 8; ne++)
+    {
+        if ((pos.x + ne >= 8) || (pos.y + ne >= 8))
+            break;
+
+        if (b[pos.x + ne][pos.y + ne] != nullptr)
+        {
+            if (b[pos.x + ne][pos.y + ne]->getColor() == p->getColor())
+            {
+                break;
+            }
+            else
+            {
+                validMoves->append({pos.x + ne, pos.y + ne});
+                break;
+            }
+        }
+        validMoves->append({pos.x + ne, pos.y + ne});
+    }
+
+    for (int sw = 1; sw < 8; sw++)
+    {
+        if ((pos.x - sw < 0) || (pos.y - sw < 0))
+            break;
+
+        if (b[pos.x - sw][pos.y - sw] != nullptr)
+        {
+            if (b[pos.x - sw][pos.y - sw]->getColor() == p->getColor())
+            {
+                break;
+            }
+            else
+            {
+                validMoves->append({pos.x - sw, pos.y - sw});
+                break;
+            }
+        }
+        validMoves->append({pos.x - sw, pos.y - sw});
+    }
+
+    for (int nw = 1; nw < 8; nw++)
+    {
+        if ((pos.x - nw < 0) || (pos.y + nw >= 8))
+            break;
+        if (b[pos.x - nw][pos.y + nw] != nullptr)
+        {
+            if (b[pos.x - nw][pos.y + nw]->getColor() == p->getColor())
+            {
+                break;
+            }
+            else
+            {
+                validMoves->append({pos.x - nw, pos.y + nw});
+                break;
+            }
+        }
+        validMoves->append({pos.x - nw, pos.y + nw});
+    }
+
+    for (int se = 1; se < 8; se++)
+    {
+        if ((pos.x + se >= 8) || (pos.y - se < 0))
+            break;
+        if (b[pos.x + se][pos.y - se] != nullptr)
+        {
+            if (b[pos.x + se][pos.y - se]->getColor() == p->getColor())
+            {
+                break;
+            }
+            else
+            {
+                validMoves->append({pos.x + se, pos.y - se});
+                break;
+            }
+        }
+        validMoves->append({pos.x + se, pos.y - se});
+    }
 }
 
 void RuleManager::getKingMoves(Piece *b[8][8], Piece *p)

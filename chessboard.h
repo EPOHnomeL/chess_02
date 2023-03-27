@@ -15,10 +15,11 @@ public:
     explicit ChessBoard(QWidget *parent = nullptr);
     QGraphicsPixmapItem *putPieceAt(QString piece, Pos pos);
     MyGraphicsScene *getScene() const;
+    void toggleSquare(Pos pos);
 
 private:
     const QColor colors[2] = {QColor(121, 72, 57), QColor(93, 50, 49)};
-
+    const QColor active[2] = {QColor(161, 132, 117), QColor(153, 110, 109)};
     QLabel *label;
     QLayout *layout;
     QGraphicsView *view;
