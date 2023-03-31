@@ -49,7 +49,9 @@ bool CheckManager::checkFutureCheck(Piece *b[8][8], Piece *p, Pos to)
     prevPiece = b[to.x][to.y];
     b[to.x][to.y] = b[pos.x][pos.y];
     b[pos.x][pos.y] = nullptr;
+
     const Piece* king = findKing(b, p->getColor());
+
     if(king == nullptr)     // you got some problem then...
         return false;
     for(int i=0; i<8;i++){

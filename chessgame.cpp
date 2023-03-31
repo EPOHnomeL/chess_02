@@ -6,9 +6,7 @@ ChessGame::ChessGame(QObject *parent) : QObject(parent)
     board = new ChessBoard();
     setupPieces();
     select = {-1, -1};
-    inCheck = false;
     whitesTurn = true;
-    rm = new RuleManager();
     cm = new CheckManager();
     qInfo() << "White's turn";
     connect(board->getScene(),
@@ -38,16 +36,7 @@ void ChessGame::userClickedSquare(Pos pos)
         if (piece->getColor() != whitesTurn)
             return;
 
-        if(inCheck)
-        {
-            qInfo()<< "Cant move in check";
-            validMoves = cm->getValidMoves(state, piece);
-            inCheck = false;
-
-        } else
-        {
-            validMoves = rm->getValidMoves(state, piece);
-        }
+        validMoves = cm->getValidMoves(state, piece);
 
         if (validMoves == nullptr)
             return;
@@ -91,10 +80,6 @@ void ChessGame::userClickedSquare(Pos pos)
         state[pos.x][pos.y] = state[select.x][select.y];
         state[select.x][select.y] = nullptr;
         select = {-1, -1};
-        if(cm->checkCheck(state, !whitesTurn)){
-            inCheck = true;
-            qInfo() << (!whitesTurn ? "White's in check" : "Black's in check");
-        }
         whitesTurn = !whitesTurn;
         qInfo() << (whitesTurn ? "White's turn" : "Black's turn");
     }
