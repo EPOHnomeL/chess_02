@@ -35,34 +35,39 @@ void ChessGame::userClickedSquare(Pos pos)
         if (piece->getColor() != whitesTurn)
             return;
         validMoves = rm->getValidMoves(state, piece);
-        if(validMoves == nullptr)
+        if (validMoves == nullptr)
             return;
-        if(validMoves->size() == 0)
+        if (validMoves->size() == 0)
             return;
         select = pos;
-
-        for(int i=0; i<validMoves->size(); i++)
+        board->toggleSquare(pos, true);
+        for (int i = 0; i < validMoves->size(); i++)
         {
-            board->toggleSquare(validMoves->at(i));
+            board->toggleSquare(validMoves->at(i), false);
         }
-        qInfo() << "selected " << piece->getType() << "at x: " << pos.x << " y: " << pos.y;
-        // toggle active square;
     }
     else
     {
-
-        if(validMoves->indexOf(pos) == -1)
-            return;
-
-        for(int i=0; i<validMoves->size(); i++)
+        board->toggleSquare(select, true);
+        for (int i = 0; i < validMoves->size(); i++)
         {
-            board->toggleSquare(validMoves->at(i));
+            board->toggleSquare(validMoves->at(i), false);
+        }
+
+        if (validMoves->indexOf(pos) == -1)
+        {
+            select = {-1, -1};
+            return;
         }
         Piece *enemy = state[pos.x][pos.y];
-        if(enemy != nullptr){
-            if(enemy->getColor() == whitesTurn){
+        if (enemy != nullptr)
+        {
+            if (enemy->getColor() == whitesTurn)
+            {
                 return;
-            }else{
+            }
+            else
+            {
                 delete enemy;
                 state[pos.x][pos.y] = nullptr;
             }
@@ -71,9 +76,6 @@ void ChessGame::userClickedSquare(Pos pos)
         piece->setPos(pos);
         state[pos.x][pos.y] = state[select.x][select.y];
         state[select.x][select.y] = nullptr;
-        // clear valid moves tiles
-        //        delete validMoves;
-        qInfo() << "to x: " << pos.x << " y: " << pos.y;
         select = {-1, -1};
         whitesTurn = !whitesTurn;
         qInfo() << (whitesTurn ? "White's turn" : "Black's turn");

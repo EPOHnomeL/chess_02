@@ -13,7 +13,6 @@ public:
     bool getColor() const;
     const QString &getType() const;
 
-
     QGraphicsPixmapItem *getPng() const;
     void clearPng();
 

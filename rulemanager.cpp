@@ -1,5 +1,6 @@
 #include "rulemanager.h"
 #include <QDebug>
+#include <math.h>
 
 RuleManager::RuleManager()
 {
@@ -274,12 +275,60 @@ void RuleManager::getBishopMoves(Piece *b[8][8], Piece *p)
 
 void RuleManager::getKingMoves(Piece *b[8][8], Piece *p)
 {
+    Pos pos = p->getPos();
+    for (int i = pos.x - 1; i < 2 + pos.x; i++)
+    {
+        if (i < 0 || i > 7)
+            continue;
+        for (int j = pos.y - 1; j < 2 + pos.y; j++)
+        {
+            if (j < 0 || j > 7)
+                continue;
+            if (b[i][j] == nullptr)
+            {
+                validMoves->append({i, j});
+            }
+            else
+            {
+                if (b[i][j]->getColor() == p->getColor())
+                {
+                    continue;
+                }
+                else
+                {
+                    validMoves->append({i, j});
+                }
+            }
+        }
+    }
+    // Add castling...
 }
 
 void RuleManager::getQueenMoves(Piece *b[8][8], Piece *p)
 {
+    getRookMoves(b, p);
+    getBishopMoves(b, p);
 }
 
 void RuleManager::getKnightMoves(Piece *b[8][8], Piece *p)
 {
+    Pos pos = p->getPos();
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 8; j++)
+        {
+            int x = abs(pos.x - i);
+            int y = abs(pos.y - j);
+            if (x * y == 2)
+            {
+                if (b[i][j] == nullptr)
+                {
+                    validMoves->append({i, j});
+                    continue;
+                }
+                if (b[i][j]->getColor() != p->getColor())
+                    validMoves->append({i, j});
+            }
+        }
+    }
 }

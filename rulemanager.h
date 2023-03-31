@@ -8,6 +8,7 @@ class RuleManager
 public:
     RuleManager();
     QVector<Pos> *getValidMoves(Piece *board[8][8], Piece *p);
+
 private:
     QVector<Pos> *validMoves;
     Piece *state[8][8];

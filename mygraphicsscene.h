@@ -14,7 +14,6 @@ public:
     explicit MyGraphicsScene(QObject *parent = nullptr);
     ~MyGraphicsScene();
 
-
 signals:
     void userClick(Pos pos);
 

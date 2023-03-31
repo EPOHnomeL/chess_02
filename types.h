@@ -6,9 +6,9 @@
 struct Pos
 {
     int x, y;
-    bool operator ==(const Pos& a)
+    bool operator==(const Pos &a)
     {
-        if(x == a.x && y == a.y)
+        if (x == a.x && y == a.y)
             return true;
         else
             return false;
@@ -25,7 +25,7 @@ const QString piecesNames[6] =
         "king"};
 
 const QString w_starting[2][8] = {
-    {"pawn", "pawn", "pawn", "rook", "bishop", "pawn", "pawn", "pawn"},
+    {"pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn"},
     {"rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook"}};
 
 const QString b_starting[2][8] = {

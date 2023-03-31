@@ -9,7 +9,7 @@ ChessBoard::ChessBoard(QWidget *parent) : QWidget(parent)
 
     layout->addWidget(view);
     layout->addWidget(label);
-
+    //    SetInfoText("Welcome, press SPACEBAR to start game...");
     this->setLayout(layout);
     view->setScene(scene);
 
@@ -28,7 +28,7 @@ void ChessBoard::init()
         {
             squares[i][j] = new QGraphicsRectItem(i * 100, j * 100, 100, 100);
             squares[i][j]->setPen(Qt::NoPen);
-            squares[i][j]->setBrush(QBrush(((i + j) % 2 == 0) ? colors[0]: colors[1]));
+            squares[i][j]->setBrush(QBrush(((i + j) % 2 == 0) ? colors[0] : colors[1]));
             scene->addItem(squares[i][j]);
             if (j == 0)
             {
@@ -47,7 +47,7 @@ void ChessBoard::init()
     }
 }
 
-QGraphicsPixmapItem* ChessBoard::putPieceAt(QString piece, Pos pos)
+QGraphicsPixmapItem *ChessBoard::putPieceAt(QString piece, Pos pos)
 {
     QImage *image = new QImage(":img/" + piece + ".png");
     QPixmap p = QPixmap::fromImage(*image).scaled(80, 80, Qt::KeepAspectRatio, Qt::SmoothTransformation);
@@ -61,14 +61,34 @@ MyGraphicsScene *ChessBoard::getScene() const
     return scene;
 }
 
-void ChessBoard::toggleSquare(Pos _pos)
+void ChessBoard::SetInfoText(QString s)
+{
+    label->setText(s);
+}
+
+void ChessBoard::toggleSquare(Pos _pos, bool isSelect)
 {
     Pos pos = {_pos.y, _pos.x};
-    if(squares[pos.x][pos.y]->brush().color() == active[0] || squares[pos.x][pos.y]->brush().color() == active[1])
+    if (!isSelect)
     {
-        squares[pos.x][pos.y]->setBrush(QBrush(((pos.x + pos.y) % 2 == 0) ? colors[0]: colors[1]));
-    }else
+        if (squares[pos.x][pos.y]->brush().color() == active[0] || squares[pos.x][pos.y]->brush().color() == active[1])
+        {
+            squares[pos.x][pos.y]->setBrush(QBrush(((pos.x + pos.y) % 2 == 0) ? colors[0] : colors[1]));
+        }
+        else
+        {
+            squares[pos.x][pos.y]->setBrush(QBrush(((pos.x + pos.y) % 2 == 0) ? active[0] : active[1]));
+        }
+    }
+    else
     {
-        squares[pos.x][pos.y]->setBrush(QBrush(((pos.x + pos.y) % 2 == 0) ? active[0]: active[1]));
+        if (squares[pos.x][pos.y]->brush().color() == select)
+        {
+            squares[pos.x][pos.y]->setBrush(QBrush(((pos.x + pos.y) % 2 == 0) ? colors[0] : colors[1]));
+        }
+        else
+        {
+            squares[pos.x][pos.y]->setBrush(QBrush(select));
+        }
     }
 }
