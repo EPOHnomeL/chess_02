@@ -7,6 +7,7 @@
 #include "chessboard.h"
 #include "piece.h"
 #include "mygraphicsscene.h"
+#include "checkmanager.h"
 #include "rulemanager.h"
 
 class ChessGame : public QObject
@@ -23,8 +24,10 @@ private slots:
 private:
     const QColor selectedPiece = QColor(0, 0, 0);
     const QColor validSquare = QColor(50, 50, 50);
+    bool inCheck;
     Pos select;
     RuleManager *rm;
+    CheckManager *cm;
     QVector<Pos> *validMoves;
     ChessBoard *board;
     Piece *state[8][8];

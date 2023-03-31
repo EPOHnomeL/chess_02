@@ -16,6 +16,7 @@ QVector<Pos> *RuleManager::getValidMoves(Piece *board[8][8], Piece *p)
             n = i;
             break;
         }
+
     switch (n)
     {
     case 0:
