@@ -77,6 +77,28 @@ bool CheckManager::checkFutureCheck(Piece *b[8][8], Piece *p, Pos to)
     return false;
 }
 
+bool CheckManager::checkCheckMate(Piece *b[8][8], bool color)
+{
+     QVector<Pos> *validMoves = new QVector<Pos>();
+     QVector<Pos> *pieceMoves = new QVector<Pos>();
+    for(int i=0; i<8;i++){
+        for(int j=0;j<8;j++){
+            if(b[i][j] == nullptr)
+                continue;
+            if(b[i][j]->getColor() != color)
+                continue;
+            delete pieceMoves;
+            pieceMoves = getValidMoves(b, b[i][j]);
+            for (int k = 0; k < pieceMoves->size(); k++)
+            {
+                if (!checkFutureCheck(b, b[i][j], pieceMoves->at(k)))
+                    validMoves->append(pieceMoves->at(k));
+            }
+        }
+    }
+    return validMoves->size() == 0 ? true : false;
+}
+
 Piece *CheckManager::findKing(Piece *b[8][8], bool color)
 {
     for (int i = 0; i < 8; i++)

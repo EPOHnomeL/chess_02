@@ -12,6 +12,7 @@ public:
     explicit CheckManager(QObject *parent = nullptr);
     QVector<Pos>* getValidMoves(Piece* b[8][8], Piece *p);
     bool checkFutureCheck(Piece *b[8][8], Piece *p, Pos to);
+    bool checkCheckMate(Piece *b[8][8], bool color);
 
 signals:
     void checkmate();
