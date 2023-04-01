@@ -22,6 +22,7 @@ private slots:
     void userClickedSquare(Pos pos);
 
 private:
+    bool inGame;
     const QColor selectedPiece = QColor(0, 0, 0);
     const QColor validSquare = QColor(50, 50, 50);
     Pos select;

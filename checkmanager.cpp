@@ -25,27 +25,24 @@ bool CheckManager::checkFutureCheck(Piece *b[8][8], Piece *p, Pos to)
     Pos pos = p->getPos();
     Piece *king;
     if (p->getType() == "king")
-    {
         king = p;
-    }
     else
-    {
         king = findKing(b, p->getColor());
-    }
+
     prevPiece = b[to.x][to.y];
     b[to.x][to.y] = b[pos.x][pos.y];
     b[pos.x][pos.y] = nullptr;
 
     if (king == nullptr) // you got some problem then...
         return false;
+
     for (int i = 0; i < 8; i++)
     {
         for (int j = 0; j < 8; j++)
         {
-            if (b[i][j] == nullptr)
+            if (b[i][j] == nullptr || b[i][j]->getColor() == king->getColor())
                 continue;
-            if (b[i][j]->getColor() == king->getColor())
-                continue;
+
             QVector<Pos> *pieceMoves = rm->getValidMoves(b, b[i][j]);
             if (p->getType() == "king")
             {
@@ -85,9 +82,7 @@ bool CheckManager::checkCheckMate(Piece *b[8][8], bool color)
     {
         for (int j = 0; j < 8; j++)
         {
-            if (b[i][j] == nullptr)
-                continue;
-            if (b[i][j]->getColor() != color)
+            if (b[i][j] == nullptr || b[i][j]->getColor() != color)
                 continue;
             delete pieceMoves;
             pieceMoves = getValidMoves(b, b[i][j]);

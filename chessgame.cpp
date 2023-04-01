@@ -9,6 +9,7 @@ ChessGame::ChessGame(QObject *parent) : QObject(parent)
     whitesTurn = true;
     cm = new CheckManager();
     qInfo() << "White's turn";
+    inGame = true;
     connect(board->getScene(),
             (&MyGraphicsScene::userClick),
             this,
@@ -25,7 +26,7 @@ void ChessGame::userClickedSquare(Pos pos)
     // If there are no pieces on the square or nothing selected or the same thing selected or other player's piece
     Piece *piece = state[pos.x][pos.y];
 
-    if ((piece == nullptr && (select == (Pos){-1, -1})) || (select == pos))
+    if ((piece == nullptr && (select == (Pos){-1, -1})) || (select == pos) || !inGame)
     {
         return;
     }
@@ -38,30 +39,25 @@ void ChessGame::userClickedSquare(Pos pos)
 
         validMoves = cm->getValidMoves(state, piece);
 
-        if (validMoves == nullptr)
-            return;
-        if (validMoves->size() == 0)
+        if (validMoves == nullptr || validMoves->size() == 0)
             return;
         select = pos;
         board->toggleSquare(pos, true);
         for (int i = 0; i < validMoves->size(); i++)
-        {
             board->toggleSquare(validMoves->at(i), false);
-        }
     }
     else
     {
         board->toggleSquare(select, true);
         for (int i = 0; i < validMoves->size(); i++)
-        {
             board->toggleSquare(validMoves->at(i), false);
-        }
 
         if (validMoves->indexOf(pos) == -1)
         {
             select = {-1, -1};
             return;
         }
+
         Piece *enemy = state[pos.x][pos.y];
         if (enemy != nullptr)
         {
@@ -75,6 +71,7 @@ void ChessGame::userClickedSquare(Pos pos)
                 state[pos.x][pos.y] = nullptr;
             }
         }
+
         piece = state[select.x][select.y];
         piece->setPos(pos);
         state[pos.x][pos.y] = state[select.x][select.y];
@@ -84,7 +81,10 @@ void ChessGame::userClickedSquare(Pos pos)
         if (cm->checkCheckMate(state, !whitesTurn))
         {
             qInfo() << (whitesTurn ? "======= White won!!" : "======= Black won!!");
+            inGame = false;
+            return;
         }
+
         whitesTurn = !whitesTurn;
         qInfo() << (whitesTurn ? "White's turn" : "Black's turn");
     }
