@@ -81,7 +81,8 @@ void ChessGame::userClickedSquare(Pos pos)
         state[select.x][select.y] = nullptr;
         select = {-1, -1};
 
-        if(cm->checkCheckMate(state, !whitesTurn)){
+        if (cm->checkCheckMate(state, !whitesTurn))
+        {
             qInfo() << (whitesTurn ? "======= White won!!" : "======= Black won!!");
         }
         whitesTurn = !whitesTurn;

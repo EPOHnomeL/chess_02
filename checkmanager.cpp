@@ -79,13 +79,15 @@ bool CheckManager::checkFutureCheck(Piece *b[8][8], Piece *p, Pos to)
 
 bool CheckManager::checkCheckMate(Piece *b[8][8], bool color)
 {
-     QVector<Pos> *validMoves = new QVector<Pos>();
-     QVector<Pos> *pieceMoves = new QVector<Pos>();
-    for(int i=0; i<8;i++){
-        for(int j=0;j<8;j++){
-            if(b[i][j] == nullptr)
+    QVector<Pos> *validMoves = new QVector<Pos>();
+    QVector<Pos> *pieceMoves = new QVector<Pos>();
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 8; j++)
+        {
+            if (b[i][j] == nullptr)
                 continue;
-            if(b[i][j]->getColor() != color)
+            if (b[i][j]->getColor() != color)
                 continue;
             delete pieceMoves;
             pieceMoves = getValidMoves(b, b[i][j]);
