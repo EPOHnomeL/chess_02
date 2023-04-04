@@ -32,6 +32,8 @@ private:
     ChessBoard *board;
     Piece *state[8][8];
     bool whitesTurn;
+    bool canCastle[2];
+    void checkCastle(Piece *king, Pos to);
     void setupPieces();
 };
 

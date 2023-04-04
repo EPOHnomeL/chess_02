@@ -8,6 +8,8 @@ ChessGame::ChessGame(QObject *parent) : QObject(parent)
     setupPieces();
     select = {-1, -1};
     whitesTurn = true;
+    canCastle[0] = true;
+    canCastle[1] = true;
     cm = new CheckManager(board);
     qInfo() << "White's turn";
     inGame = true;
@@ -31,7 +33,7 @@ void ChessGame::userClickedSquare(Pos pos)
     // If there are no pieces on the square or nothing selected or the same thing selected or other player's piece
     Piece *piece = state[pos.x][pos.y];
 
-//    qInfo()<< "selected x: "<< pos.x<<"  y: "<<pos.y;
+    //    qInfo()<< "selected x: "<< pos.x<<"  y: "<<pos.y;
     if ((piece == nullptr && (select == (Pos){-1, -1})) || (select == pos) || !inGame)
     {
         return;
@@ -78,6 +80,14 @@ void ChessGame::userClickedSquare(Pos pos)
             }
         }
 
+        if(canCastle[whitesTurn])
+            if (state[select.x][select.y]->getType() == "king")
+            {
+                checkCastle(state[select.x][select.y], pos);
+                canCastle[whitesTurn] = false;
+                cm->getRm()->canCastle[whitesTurn] = false;
+            }
+
         piece = state[select.x][select.y];
         piece->setPos(pos);
         state[pos.x][pos.y] = state[select.x][select.y];
@@ -99,16 +109,35 @@ void ChessGame::userClickedSquare(Pos pos)
 void ChessGame::promotePawn(Pos pos)
 {
     // Ask user for queen or knight
-     if(pos.x == 0){
-         const QString piece = "w_queen";
-         QGraphicsPixmapItem *png = board->putPieceAt(piece, pos);
-         state[pos.x][pos.y] = new Piece("queen", pos, true, png);
-     }
-     if(pos.x == 7){
-         const QString piece = "b_queen";
-         QGraphicsPixmapItem *png = board->putPieceAt(piece, pos);
-         state[pos.x][pos.y] = new Piece("queen", pos, false, png);
-     }
+    if (pos.x == 0)
+    {
+        const QString piece = "w_queen";
+        QGraphicsPixmapItem *png = board->putPieceAt(piece, pos);
+        state[pos.x][pos.y] = new Piece("queen", pos, true, png);
+    }
+    if (pos.x == 7)
+    {
+        const QString piece = "b_queen";
+        QGraphicsPixmapItem *png = board->putPieceAt(piece, pos);
+        state[pos.x][pos.y] = new Piece("queen", pos, false, png);
+    }
+}
+
+void ChessGame::checkCastle(Piece *king, Pos to)
+{
+    int x = king->getColor() ? 7 : 0;
+    if (king->getPos() == (Pos){x, 4} && to == (Pos){x, 2})
+    {
+        state[x][0]->setPos({x, 3});
+        state[x][3] = state[x][0];
+        state[x][0] = nullptr;
+    }
+    if (king->getPos() == (Pos){x, 4} && to == (Pos){x, 6})
+    {
+        state[x][7]->setPos({x, 5});
+        state[x][5] = state[x][7];
+        state[x][7] = nullptr;
+    }
 }
 
 void ChessGame::setupPieces()

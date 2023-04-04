@@ -98,13 +98,14 @@ bool CheckManager::checkCheckMate(Piece *b[8][8], bool color)
 
 Piece *CheckManager::findKing(Piece *b[8][8], bool color)
 {
-    if(color)
+    if (color)
     {
-        if(b[7][4] != nullptr && b[7][4]->getType()=="king")
+        if (b[7][4] != nullptr && b[7][4]->getType() == "king")
             return b[7][4];
-    } else
+    }
+    else
     {
-        if(b[0][4] != nullptr && b[0][4]->getType()=="king")
+        if (b[0][4] != nullptr && b[0][4]->getType() == "king")
             return b[0][4];
     }
 

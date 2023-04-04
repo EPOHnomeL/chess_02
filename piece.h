@@ -8,7 +8,7 @@ class Piece
 public:
     Piece(QString type, Pos pos, bool color, QGraphicsPixmapItem *png);
     ~Piece();
-    const Pos &getPos() const;
+    Pos getPos();
     void setPos(Pos newPos);
     bool getColor() const;
     const QString &getType() const;

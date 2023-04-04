@@ -5,6 +5,8 @@
 
 RuleManager::RuleManager(QObject *parent) : QObject(parent)
 {
+    canCastle[0] = true;
+    canCastle[1] = true;
 }
 
 QVector<Pos> *RuleManager::getValidMoves(Piece *board[8][8], Piece *p)
@@ -51,10 +53,11 @@ void RuleManager::getPawnMoves(Piece *b[8][8], Piece *p)
     {
         if (pos.x == 6)
         {
-            if (b[pos.x - 1][pos.y] == nullptr){
+            if (b[pos.x - 1][pos.y] == nullptr)
+            {
                 validMoves->append((Pos){pos.x - 1, pos.y});
                 if (b[pos.x - 2][pos.y] == nullptr)
-                validMoves->append((Pos){pos.x - 2, pos.y});
+                    validMoves->append((Pos){pos.x - 2, pos.y});
             }
         }
         else
@@ -90,10 +93,11 @@ void RuleManager::getPawnMoves(Piece *b[8][8], Piece *p)
     {
         if (pos.x == 1)
         {
-            if (b[pos.x + 1][pos.y] == nullptr){
+            if (b[pos.x + 1][pos.y] == nullptr)
+            {
                 validMoves->append((Pos){pos.x + 1, pos.y});
                 if (b[pos.x + 2][pos.y] == nullptr)
-                validMoves->append((Pos){pos.x + 2, pos.y});
+                    validMoves->append((Pos){pos.x + 2, pos.y});
             }
         }
         else
@@ -309,7 +313,28 @@ void RuleManager::getKingMoves(Piece *b[8][8], Piece *p)
             }
         }
     }
-    // Add castling...
+
+    if(!canCastle[p->getColor()])
+        return;
+
+    int x = p->getColor() ? 7 : 0;
+    if (
+        b[x][4] != nullptr &&
+        b[x][0] != nullptr &&
+        b[x][1] == nullptr &&
+        b[x][2] == nullptr &&
+        b[x][3] == nullptr &&
+        b[x][4]->getType() == "king" &&
+        b[x][0]->getType() == "rook")
+        validMoves->append({x, 2});
+    if (
+        b[x][4] != nullptr &&
+        b[x][7] != nullptr &&
+        b[x][6] == nullptr &&
+        b[x][5] == nullptr &&
+        b[x][4]->getType() == "king" &&
+        b[x][7]->getType() == "rook")
+        validMoves->append({x, 6});
 }
 
 void RuleManager::getQueenMoves(Piece *b[8][8], Piece *p)

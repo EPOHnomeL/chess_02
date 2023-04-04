@@ -13,7 +13,7 @@ Piece::~Piece()
     png->~QGraphicsPixmapItem();
 }
 
-const Pos &Piece::getPos() const
+Pos Piece::getPos()
 {
     return pos;
 }
