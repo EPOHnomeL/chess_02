@@ -1,8 +1,9 @@
 #include "rulemanager.h"
 #include <QDebug>
+#include <QGraphicsPixmapItem>
 #include <math.h>
 
-RuleManager::RuleManager()
+RuleManager::RuleManager(QObject *parent) : QObject(parent)
 {
 }
 
@@ -40,8 +41,6 @@ QVector<Pos> *RuleManager::getValidMoves(Piece *board[8][8], Piece *p)
     default:
         break;
     }
-
-    // Restrict valid moves on th board i.e. white and black pieces
     return validMoves;
 }
 
@@ -52,16 +51,20 @@ void RuleManager::getPawnMoves(Piece *b[8][8], Piece *p)
     {
         if (pos.x == 6)
         {
-            if (b[pos.x - 1][pos.y] == nullptr)
+            if (b[pos.x - 1][pos.y] == nullptr){
                 validMoves->append((Pos){pos.x - 1, pos.y});
-            if (b[pos.x - 2][pos.y] == nullptr)
+                if (b[pos.x - 2][pos.y] == nullptr)
                 validMoves->append((Pos){pos.x - 2, pos.y});
+            }
         }
         else
         {
             if (pos.x == 0)
             {
-                // Promote pawn!
+                delete b[pos.x][pos.y];
+                b[pos.x][pos.y] = nullptr;
+                emit promotePawn(pos);
+                return;
             }
             else
             {
@@ -87,16 +90,20 @@ void RuleManager::getPawnMoves(Piece *b[8][8], Piece *p)
     {
         if (pos.x == 1)
         {
-            if (b[pos.x + 1][pos.y] == nullptr)
+            if (b[pos.x + 1][pos.y] == nullptr){
                 validMoves->append((Pos){pos.x + 1, pos.y});
-            if (b[pos.x + 2][pos.y] == nullptr)
+                if (b[pos.x + 2][pos.y] == nullptr)
                 validMoves->append((Pos){pos.x + 2, pos.y});
+            }
         }
         else
         {
             if (pos.x == 7)
             {
-                // Promote pawn!
+                delete b[pos.x][pos.y];
+                b[pos.x][pos.y] = nullptr;
+                emit promotePawn(pos);
+                return;
             }
             else
             {

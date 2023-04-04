@@ -20,6 +20,7 @@ public:
 
 private slots:
     void userClickedSquare(Pos pos);
+    void promotePawn(Pos pos);
 
 private:
     bool inGame;

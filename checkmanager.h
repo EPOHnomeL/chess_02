@@ -14,10 +14,11 @@ public:
     bool checkFutureCheck(Piece *b[8][8], Piece *p, Pos to);
     bool checkCheckMate(Piece *b[8][8], bool color);
 
+    RuleManager *getRm() const;
+
 private:
     Piece *findKing(Piece *b[8][8], bool turn);
     Piece *attacker = nullptr;
-    //    bool multipleAttackers;            ??
     RuleManager *rm;
     Piece *prevPiece;
 };

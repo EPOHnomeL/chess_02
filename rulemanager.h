@@ -2,16 +2,20 @@
 #define RULEMANAGER_H
 #include "piece.h"
 #include "types.h"
+#include <QObject>
 
-class RuleManager
+class RuleManager : public QObject
 {
+    Q_OBJECT
 public:
-    RuleManager();
+    explicit RuleManager(QObject *parent = nullptr);
     QVector<Pos> *getValidMoves(Piece *board[8][8], Piece *p);
+
+signals:
+    void promotePawn(Pos pos);
 
 private:
     QVector<Pos> *validMoves;
-    Piece *state[8][8];
     void getPawnMoves(Piece *b[8][8], Piece *p);
     void getRookMoves(Piece *b[8][8], Piece *p);
     void getBishopMoves(Piece *b[8][8], Piece *p);

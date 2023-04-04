@@ -1,4 +1,5 @@
 #include "chessgame.h"
+#include "rulemanager.h"
 #include <QDebug>
 
 ChessGame::ChessGame(QObject *parent) : QObject(parent)
@@ -7,13 +8,17 @@ ChessGame::ChessGame(QObject *parent) : QObject(parent)
     setupPieces();
     select = {-1, -1};
     whitesTurn = true;
-    cm = new CheckManager();
+    cm = new CheckManager(board);
     qInfo() << "White's turn";
     inGame = true;
     connect(board->getScene(),
             (&MyGraphicsScene::userClick),
             this,
             (&ChessGame::userClickedSquare));
+    connect(cm->getRm(),
+            (&RuleManager::promotePawn),
+            this,
+            (&ChessGame::promotePawn));
 }
 
 ChessBoard *ChessGame::getBoard() const
@@ -26,6 +31,7 @@ void ChessGame::userClickedSquare(Pos pos)
     // If there are no pieces on the square or nothing selected or the same thing selected or other player's piece
     Piece *piece = state[pos.x][pos.y];
 
+//    qInfo()<< "selected x: "<< pos.x<<"  y: "<<pos.y;
     if ((piece == nullptr && (select == (Pos){-1, -1})) || (select == pos) || !inGame)
     {
         return;
@@ -88,6 +94,21 @@ void ChessGame::userClickedSquare(Pos pos)
         whitesTurn = !whitesTurn;
         qInfo() << (whitesTurn ? "White's turn" : "Black's turn");
     }
+}
+
+void ChessGame::promotePawn(Pos pos)
+{
+    // Ask user for queen or knight
+     if(pos.x == 0){
+         const QString piece = "w_queen";
+         QGraphicsPixmapItem *png = board->putPieceAt(piece, pos);
+         state[pos.x][pos.y] = new Piece("queen", pos, true, png);
+     }
+     if(pos.x == 7){
+         const QString piece = "b_queen";
+         QGraphicsPixmapItem *png = board->putPieceAt(piece, pos);
+         state[pos.x][pos.y] = new Piece("queen", pos, false, png);
+     }
 }
 
 void ChessGame::setupPieces()
