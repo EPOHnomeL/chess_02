@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QWidget>
 #include <QVector>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
 #include "chessboard.h"
 #include "piece.h"
 #include "mygraphicsscene.h"
@@ -35,6 +37,9 @@ private:
     bool canCastle[2];
     void checkCastle(Piece *king, Pos to);
     void setupPieces();
+
+    QNetworkAccessManager *netManager;
+    QNetworkReply *netRep1y;
 };
 
 #endif // CHESSGAME_H
