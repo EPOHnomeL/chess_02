@@ -1,6 +1,5 @@
 #include "chessgame.h"
 #include "rulemanager.h"
-#include <QDebug>
 
 ChessGame::ChessGame(QObject *parent) : QObject(parent)
 {
@@ -11,8 +10,8 @@ ChessGame::ChessGame(QObject *parent) : QObject(parent)
     canCastle[0] = true;
     canCastle[1] = true;
     cm = new CheckManager(board);
-    qInfo() << "White's turn";
     inGame = true;
+    api = new Api();
     connect(board->getScene(),
             (&MyGraphicsScene::userClick),
             this,
@@ -90,19 +89,19 @@ void ChessGame::userClickedSquare(Pos pos)
 
         piece = state[select.x][select.y];
         piece->setPos(pos);
+        afterMove(select, pos);
         state[pos.x][pos.y] = state[select.x][select.y];
         state[select.x][select.y] = nullptr;
         select = {-1, -1};
 
         if (cm->checkCheckMate(state, !whitesTurn))
         {
-            qInfo() << (whitesTurn ? "======= White won!!" : "======= Black won!!");
+            emit gameFinished("Checkmate", whitesTurn);
             inGame = false;
             return;
         }
 
         whitesTurn = !whitesTurn;
-        qInfo() << (whitesTurn ? "White's turn" : "Black's turn");
     }
 }
 
@@ -162,4 +161,15 @@ void ChessGame::setupPieces()
             }
         }
     }
+}
+
+void ChessGame::afterMove(Pos from, Pos to)
+{
+
+    emit turnChange(getMoveNotation(from, to), state[from.x][from.y]->getColor());
+}
+
+QString ChessGame::getMoveNotation(Pos from, Pos to)
+{
+    return "e4";
 }

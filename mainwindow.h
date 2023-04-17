@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include <QProcess>
+#include <QLabel>
+#include <QTextEdit>
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -19,8 +21,14 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void turnChange(QString move, bool player);
+    void gameFinished(QString reason, bool player);
+
 private:
     Ui::MainWindow *ui;
     QProcess *apiProcess;
+    QLabel *turnLabel;
+    QTextEdit *te;
 };
 #endif // MAINWINDOW_H

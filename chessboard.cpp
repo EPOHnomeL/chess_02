@@ -5,17 +5,14 @@ ChessBoard::ChessBoard(QWidget *parent) : QWidget(parent)
     scene = new MyGraphicsScene();
     view = new QGraphicsView(this);
     layout = new QGridLayout(this);
-    label = new QLabel(this);
-
     layout->addWidget(view);
-    layout->addWidget(label);
-    //    SetInfoText("Welcome, press SPACEBAR to start game...");
     this->setLayout(layout);
     view->setScene(scene);
 
     init();
 
     view->setFixedSize(802, 803);
+    view->setMinimumSize(802, 803);
     view->show();
 }
 
