@@ -1,4 +1,5 @@
 #include "api.h"
+#include <QHttpPart>
 #include <QDebug>
 
 Api::Api(QObject *parent) : QObject(parent)
@@ -7,9 +8,10 @@ Api::Api(QObject *parent) : QObject(parent)
     res = nullptr;
 }
 
-QJsonObject Api::getData(QString apiCall)
+QJsonObject Api::get(QString apiCall)
 {
     QNetworkRequest req{QUrl(URL+apiCall)};
+    qInfo() << "GET: " << req.url().toString();
     res = nm->get(req);
     QEventLoop* loop = new QEventLoop;
     connect(res,&QNetworkReply::finished,loop,&QEventLoop::quit);
@@ -18,16 +20,47 @@ QJsonObject Api::getData(QString apiCall)
     QJsonDocument doc = QJsonDocument::fromJson(data.toUtf8());
     QJsonObject obj = doc.object();
 
+    qInfo()<< obj;
     return obj;
+}
+
+QJsonObject Api::post(QString apiCall, QString postData)
+{
+    QNetworkRequest req{QUrl(URL+apiCall)};
+    QJsonDocument inputDoc = QJsonDocument::fromJson(postData.toUtf8());
+    QJsonObject obj = inputDoc.object();
+    obj.insert("game_id", gameId);
+    QJsonDocument doc(obj);
+    QString strJson(doc.toJson(QJsonDocument::Compact));
+    qInfo() << "POST: " << req.url().toString() << obj;
+
+    req.setHeader(QNetworkRequest::ContentTypeHeader, QStringLiteral("application/json; charset=utf-8"));
+
+    res = nm->post(req, strJson.toUtf8());
+    QEventLoop* loop = new QEventLoop;
+    connect(res,&QNetworkReply::finished,loop,&QEventLoop::quit);
+    loop->exec();
+    QString data = res->readAll();
+    QJsonDocument outputDoc = QJsonDocument::fromJson(data.toUtf8());
+    QJsonObject outObj = outputDoc.object();
+    qInfo() << outObj;
+    return outObj;
 }
 
 void Api::setupOnePlayer()
 {
-    QJsonObject res = getData("one");
+    QJsonObject res = get("one");
     gameId = res.value("game_id").toString();
 }
 
-void Api::setupTwoPlayer()
+void Api::tryMakeMove(Move move)
 {
+    post("one/move/player", move.toJsonString());
+}
 
+Move Api::aiMove()
+{
+    QJsonObject move = post("one/move/ai", "");
+
+    return Move();
 }

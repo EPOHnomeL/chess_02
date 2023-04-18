@@ -8,6 +8,7 @@
 #include <QJsonDocument>
 #include <QEventLoop>
 #include <QObject>
+#include "types.h"
 
 class Api : public QObject
 {
@@ -15,7 +16,8 @@ class Api : public QObject
 public:
     explicit Api(QObject *parent = nullptr);
     void setupOnePlayer();
-    void setupTwoPlayer();
+    void tryMakeMove(Move move);
+    Move aiMove();
 
 private:
     const QString URL = "http://localhost:3000/api/v1/chess/";
@@ -26,7 +28,8 @@ private:
 
     QString gameId;
 
-    QJsonObject getData(QString apiCall);
+    QJsonObject get(QString apiCall);
+    QJsonObject post(QString apiCall, QString postData);
 
 };
 

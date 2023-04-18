@@ -5,6 +5,7 @@
 #include <QProcess>
 #include <QLabel>
 #include <QTextEdit>
+#include <QGraphicsView>
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -27,8 +28,11 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    int moveCount;
     QProcess *apiProcess;
+    QProcess *dbProcess;
     QLabel *turnLabel;
     QTextEdit *te;
+    QGraphicsView *piecesLostView;
 };
 #endif // MAINWINDOW_H

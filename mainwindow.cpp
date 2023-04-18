@@ -7,9 +7,14 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    apiProcess = new QProcess(this);
-    apiProcess->start("\"C:\\Program Files\\nodejs\\node.exe\"", QStringList() << "C:\\Code\\C++\\Qt\\chess_02\\chess-api\\index.js");
-    ChessGame *chessGame = new ChessGame(this);
+    onePlayer = true;
+    if(onePlayer)
+    {
+        apiProcess = new QProcess(this);
+        apiProcess->start("\"C:\\Program Files\\nodejs\\node.exe\"", QStringList() << "C:\\Code\\C++\\Qt\\chess_02\\chess-api\\index.js");
+    }
+    ChessGame *chessGame = new ChessGame(onePlayer, this);
+    moveCount = 1;
 
     connect(chessGame, &ChessGame::turnChange, this, &MainWindow::turnChange);
     connect(chessGame, &ChessGame::gameFinished, this, &MainWindow::gameFinished);
@@ -25,16 +30,21 @@ MainWindow::MainWindow(QWidget *parent)
     f.setBold(true);
     turnLabel->setFont(f);
 
+    piecesLostView = new QGraphicsView();
+    piecesLostView->setScene(new QGraphicsScene());
+    piecesLostView->setMinimumHeight(280);
+
     te = new QTextEdit();
-    te->setText("Hi\nI'Am\nJonathan\n\n\n\n\n\n\nHi\n\n\n\n\n\n\n\n\nJaaa");
     te->setReadOnly(true);
-//    te->setMaximumHeight(200);
+    te->setMinimumHeight(0);
 
     infoLayout->addWidget(turnLabel);
     infoLayout->setAlignment(turnLabel,Qt::AlignTop);
     infoLayout->addWidget(te);
-    infoLayout->setAlignment(te,Qt::AlignLeading);
-    infoLayout->addItem(new QSpacerItem(250, 0));
+    infoLayout->setAlignment(te,Qt::AlignTrailing);
+    infoLayout->addWidget(piecesLostView);
+    infoLayout->setAlignment(piecesLostView,Qt::AlignVCenter);
+    infoLayout->addItem(new QSpacerItem(250, 200));
 
     mainLayout->setAlignment(chessGame->getBoard(),Qt::AlignLeft);
     mainLayout->addLayout(infoLayout);
@@ -43,16 +53,28 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-    apiProcess->close();
+    if(onePlayer)
+    {
+        apiProcess->terminate();
+        apiProcess->kill();
+        apiProcess->close();
+    }
     delete ui;
 }
 
 void MainWindow::turnChange(QString move, bool player)
 {
-    if(!player)
-        turnLabel->setText("Turn : ⬜");
-    else
+    if(player)
+    {
         turnLabel->setText("Turn : ⬛");
+        te->setText(te->toPlainText() + QString("%1. ").arg(moveCount) + move);
+        moveCount++;
+    }
+    else
+    {
+        turnLabel->setText("Turn : ⬜");
+        te->setText(te->toPlainText() + "\t" + move + "\n");
+    }
 }
 
 void MainWindow::gameFinished(QString reason, bool player)

@@ -25,6 +25,7 @@ public:
 signals:
     void turnChange(QString move, bool player);
     void gameFinished(QString reason, bool player);
+    void pieceTaken(Piece* p);
 
 private slots:
     void userClickedSquare(Pos pos);

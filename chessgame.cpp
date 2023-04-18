@@ -1,17 +1,22 @@
 #include "chessgame.h"
 #include "rulemanager.h"
 
-ChessGame::ChessGame(QObject *parent) : QObject(parent)
+ChessGame::ChessGame(bool onePlayer, QObject *parent) : QObject(parent)
 {
     board = new ChessBoard();
     setupPieces();
+    this->onePlayer = onePlayer;
     select = {-1, -1};
     whitesTurn = true;
     canCastle[0] = true;
     canCastle[1] = true;
     cm = new CheckManager(board);
     inGame = true;
-    api = new Api();
+    if(onePlayer)
+    {
+        api = new Api();
+        api->setupOnePlayer();
+    }
     connect(board->getScene(),
             (&MyGraphicsScene::userClick),
             this,
@@ -90,6 +95,7 @@ void ChessGame::userClickedSquare(Pos pos)
         piece = state[select.x][select.y];
         piece->setPos(pos);
         afterMove(select, pos);
+
         state[pos.x][pos.y] = state[select.x][select.y];
         state[select.x][select.y] = nullptr;
         select = {-1, -1};
@@ -165,11 +171,34 @@ void ChessGame::setupPieces()
 
 void ChessGame::afterMove(Pos from, Pos to)
 {
+    // AI stuff here
+    Move move;
+    move.from = from;
+    move.to = to;
+    api->tryMakeMove(move);
+    api->aiMove();
 
     emit turnChange(getMoveNotation(from, to), state[from.x][from.y]->getColor());
 }
 
 QString ChessGame::getMoveNotation(Pos from, Pos to)
 {
-    return "e4";
+    Piece* p = state[from.x][from.y];
+    // Check for castle
+//    if(state[from.x][from.y]->getType() == "king")
+    QString res = to.toString();
+
+    const QString abr[6] = {"", "R", "B", "N", "Q", "K"};
+    for(int i=0; i<6;i++)
+    {
+        if(p->getType() == piecesNames[i])
+        {
+            res = abr[i] + res;
+            return res;
+        }
+    }
+    return "none";
 }
+
+
+

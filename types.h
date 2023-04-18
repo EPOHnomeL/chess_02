@@ -13,6 +13,18 @@ struct Pos
         else
             return false;
     }
+    QString toString(){
+        return QString(char((y)+97)) + char((8-x)+48);
+    }
+};
+
+struct Move
+{
+    Pos from;
+    Pos to;
+    QString toJsonString(){
+        return QString("{\"from\":\"%1\",\"to\":\"%2\"}").arg(from.toString()).arg(to.toString());
+    }
 };
 
 const QString piecesNames[6] =

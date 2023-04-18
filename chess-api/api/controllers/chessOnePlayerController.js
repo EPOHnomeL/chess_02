@@ -114,6 +114,7 @@ exports.startNewGameWithPgn = function(req, res) {
 /** Params: a pgn position in json as {position: currentPosition} **/
 exports.listPosibleMoves = function(req, res) {
 
+    
     var gameId = req.body.game_id;
 
     getChess(gameId, currentGame => {
