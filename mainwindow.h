@@ -29,6 +29,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     int moveCount;
+    bool onePlayer;
     QProcess *apiProcess;
     QProcess *dbProcess;
     QLabel *turnLabel;

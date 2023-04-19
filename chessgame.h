@@ -18,7 +18,7 @@ class ChessGame : public QObject
 {
     Q_OBJECT
 public:
-    explicit ChessGame(QObject *parent = nullptr);
+    explicit ChessGame(bool onePlayer, QObject *parent = nullptr);
 
     ChessBoard *getBoard() const;
 
@@ -33,6 +33,8 @@ private slots:
 
 private:
     bool inGame;
+    bool onePlayer;
+    bool aiTurn;
     const QColor selectedPiece = QColor(0, 0, 0);
     const QColor validSquare = QColor(50, 50, 50);
     Pos select;

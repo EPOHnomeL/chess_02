@@ -12,6 +12,7 @@ ChessGame::ChessGame(bool onePlayer, QObject *parent) : QObject(parent)
     canCastle[1] = true;
     cm = new CheckManager(board);
     inGame = true;
+    aiTurn = false;
     if(onePlayer)
     {
         api = new Api();
@@ -94,10 +95,10 @@ void ChessGame::userClickedSquare(Pos pos)
 
         piece = state[select.x][select.y];
         piece->setPos(pos);
-        afterMove(select, pos);
-
         state[pos.x][pos.y] = state[select.x][select.y];
         state[select.x][select.y] = nullptr;
+        afterMove(select, pos);
+
         select = {-1, -1};
 
         if (cm->checkCheckMate(state, !whitesTurn))
@@ -106,8 +107,8 @@ void ChessGame::userClickedSquare(Pos pos)
             inGame = false;
             return;
         }
-
         whitesTurn = !whitesTurn;
+
     }
 }
 
@@ -171,19 +172,45 @@ void ChessGame::setupPieces()
 
 void ChessGame::afterMove(Pos from, Pos to)
 {
-    // AI stuff here
-    Move move;
-    move.from = from;
-    move.to = to;
-    api->tryMakeMove(move);
-    api->aiMove();
+    emit turnChange(getMoveNotation(from, to), whitesTurn);
+    if(onePlayer && !aiTurn)
+    {
+        // AI stuff here
+        Move move;
+        move.from = from;
+        move.to = to;
+        api->tryMakeMove(move);
+        Move aiMove = api->aiMove();
+        aiTurn = true;
 
-    emit turnChange(getMoveNotation(from, to), state[from.x][from.y]->getColor());
+        Piece *enemy = state[aiMove.to.x][aiMove.to.y];
+        if (enemy != nullptr)
+        {
+            if (enemy->getColor() == !whitesTurn)
+            {
+                return;
+            }
+            else
+            {
+                delete enemy;
+                state[aiMove.to.x][aiMove.to.x] = nullptr;
+            }
+        }
+
+        Piece *piece = state[aiMove.from.x][aiMove.from.y];
+        piece->setPos(aiMove.to);
+        state[aiMove.to.x][aiMove.to.y] = state[aiMove.from.x][aiMove.from.y];
+        state[aiMove.from.x][aiMove.from.y] = nullptr;
+        whitesTurn = !whitesTurn;
+        emit turnChange(getMoveNotation(aiMove.from, aiMove.to), whitesTurn);
+        aiTurn = false;
+
+    }
 }
 
 QString ChessGame::getMoveNotation(Pos from, Pos to)
 {
-    Piece* p = state[from.x][from.y];
+    Piece* p = state[to.x][to.y];
     // Check for castle
 //    if(state[from.x][from.y]->getType() == "king")
     QString res = to.toString();

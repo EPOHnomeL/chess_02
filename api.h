@@ -26,6 +26,7 @@ private:
     QNetworkAccessManager *nm;
     QNetworkReply *res;
 
+    Pos strToPos(QString s);
     QString gameId;
 
     QJsonObject get(QString apiCall);
