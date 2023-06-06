@@ -14,6 +14,7 @@ SOURCES += \
     checkmanager.cpp \
     chessboard.cpp \
     chessgame.cpp \
+    lobby.cpp \
     main.cpp \
     mainmenu.cpp \
     mainwindow.cpp \
@@ -26,6 +27,7 @@ HEADERS += \
     checkmanager.h \
     chessboard.h \
     chessgame.h \
+    lobby.h \
     mainmenu.h \
     mainwindow.h \
     mygraphicsscene.h \
@@ -34,6 +36,7 @@ HEADERS += \
     types.h
 
 FORMS += \
+    lobby.ui \
     mainmenu.ui \
     mainwindow.ui
 

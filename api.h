@@ -16,11 +16,13 @@ class Api : public QObject
 public:
     explicit Api(QObject *parent = nullptr);
     void setupOnePlayer();
+    void setupLANHost();
+    void setupLANClient(QString url);
     void tryMakeMove(Move move);
     Move aiMove();
 
 private:
-    const QString URL = "http://localhost:3000/api/v1/chess/";
+    QString URL;
     bool finished;
 
     QNetworkAccessManager *nm;
