@@ -1,5 +1,5 @@
-#ifndef MAINMENU_H
-#define MAINMENU_H
+#ifndef LOBBY_H
+#define LOBBY_H
 
 #include <QMainWindow>
 #include <QPushButton>
@@ -8,26 +8,26 @@
 QT_BEGIN_NAMESPACE
 namespace Ui
 {
-    class MainMenu;
+    class Lobby;
 }
 QT_END_NAMESPACE
 
-class MainMenu : public QMainWindow
+class Lobby : public QMainWindow
 {
     Q_OBJECT
 public:
-    explicit MainMenu(QWidget *parent = nullptr);
-    ~MainMenu();
+    explicit Lobby(QWidget *parent = nullptr);
+    ~Lobby();
 
 public slots:
-    void singlePlayerOnClick();
-    void localGameOnClick();
-    void lanGameOnClick();
+    void hostOnClick();
+    void clientOnClick();
 
 private:
     MainWindow *m;
-    Ui::MainMenu *ui;
-    QPushButton *single, *local, *lan;
+    Ui::Lobby *ui;
+    QPushButton *host, *client;
+    QLabel *info;
 
 };
 

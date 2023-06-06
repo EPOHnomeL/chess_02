@@ -49,12 +49,23 @@ QJsonObject Api::post(QString apiCall, QString postData)
 
 void Api::setupOnePlayer()
 {
+    URL = "http://localhost:3000/api/v1/chess/";
     QJsonObject res = get("one");
     if(res.isEmpty()){
         qDebug()<< "Could not initialize server, check DB";
         return;
     }
     gameId = res.value("game_id").toString();
+}
+
+void Api::setupLANHost()
+{
+    URL = "http://0.0.0.0:3000/api/v1/chess/";
+}
+
+void Api::setupLANClient(QString url)
+{
+    URL = url;
 }
 
 void Api::tryMakeMove(Move move)

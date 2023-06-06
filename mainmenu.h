@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QPushButton>
 #include "mainwindow.h"
+#include "lobby.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -26,6 +27,7 @@ public slots:
 
 private:
     MainWindow *m;
+    Lobby *l;
     Ui::MainMenu *ui;
     QPushButton *single, *local, *lan;
 

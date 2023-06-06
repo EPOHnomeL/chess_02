@@ -18,7 +18,7 @@ class ChessGame : public QObject
 {
     Q_OBJECT
 public:
-    explicit ChessGame(bool onePlayer, QObject *parent = nullptr);
+    explicit ChessGame(bool onePlayer, bool LAN, QObject *parent = nullptr);
 
     ChessBoard *getBoard() const;
 
@@ -33,7 +33,7 @@ private slots:
 
 private:
     bool inGame;
-    bool onePlayer;
+    bool onePlayer, LAN;
     bool aiTurn;
     const QColor selectedPiece = QColor(0, 0, 0);
     const QColor validSquare = QColor(50, 50, 50);
@@ -46,7 +46,8 @@ private:
     bool canCastle[2];
     void checkCastle(Piece *king, Pos to);
     void setupPieces();
-    void afterMove(Pos from, Pos to);
+    void afterMoveForAI(Pos from, Pos to);
+    void afterMoveForLAN(Pos from, Pos to);
     QString getMoveNotation(Pos from, Pos to);
     Api* api;
     QNetworkAccessManager *netManager;

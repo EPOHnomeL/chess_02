@@ -12,7 +12,8 @@ MainWindow::MainWindow(int gameType, QWidget *parent)
         break;
     case 1: onePlayer = false;
         break;
-    case 2 : onePlayer = false;
+    case 2 : {onePlayer = false;
+              LAN = true;}
         break;
     default:
         break;
@@ -22,7 +23,7 @@ MainWindow::MainWindow(int gameType, QWidget *parent)
         apiProcess = new QProcess(this);
         apiProcess->start("\"C:\\Program Files\\nodejs\\node.exe\"", QStringList() << "C:\\Code\\C++\\Qt\\chess_02\\chess-api\\index.js");
     }
-    ChessGame *chessGame = new ChessGame(onePlayer, this);
+    ChessGame *chessGame = new ChessGame(onePlayer, LAN, this);
     moveCount = 1;
 
     connect(chessGame, &ChessGame::turnChange, this, &MainWindow::turnChange);

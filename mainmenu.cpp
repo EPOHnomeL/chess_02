@@ -1,5 +1,6 @@
 #include "mainmenu.h"
 #include "ui_mainmenu.h"
+#include "lobby.h"
 
 MainMenu::MainMenu(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainMenu)
 {
@@ -34,6 +35,8 @@ void MainMenu::localGameOnClick()
 void MainMenu::lanGameOnClick()
 {
     this->hide();
-    m = new MainWindow(2);
-    m->show();
+    l = new Lobby();
+    l->show();
+//    m = new MainWindow(2);
+//    m->show();
 }

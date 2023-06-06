@@ -1,15 +1,17 @@
 #include "lobby.h"
 #include "ui_lobby.h"
+#include "QTcpSocket"
+#include "QHostAddress"
+#include <QInputDialog>
 
 Lobby::Lobby(QWidget *parent) : QMainWindow(parent), ui(new Ui::Lobby)
 {
     ui->setupUi(this);
-    single = ui->single;
-    local = ui->local;
-    lan = ui->lan;
-    connect(single, &QPushButton::clicked, this, &Lobby::singlePlayerOnClick);
-    connect(local, &QPushButton::clicked, this, &Lobby::localGameOnClick);
-    connect(lan, &QPushButton::clicked, this, &Lobby::lanGameOnClick);
+    client = ui->client;
+    host = ui->host;
+    info = ui->info;
+    connect(host, &QPushButton::clicked, this, &Lobby::hostOnClick);
+    connect(client, &QPushButton::clicked, this, &Lobby::clientOnClick);
 }
 
 Lobby::~Lobby()
@@ -17,23 +19,27 @@ Lobby::~Lobby()
     delete ui;
 }
 
-void Lobby::singlePlayerOnClick()
+void Lobby::hostOnClick()
 {
-    this->hide();
-    m = new MainWindow(0);
-    m->show();
+    host->hide();
+    client->hide();
+    QTcpSocket socket;
+    socket.connectToHost("8.8.8.8", 53); // google DNS, or something else reliable
+    if (socket.waitForConnected()) {
+        info->setText(QString("Waiting for players to connect to %1...").arg(socket.localAddress().toString()));
+    } else {
+        qWarning()
+            << "could not determine local IPv4 address:"
+            << socket.errorString();
+    }
 }
 
-void Lobby::localGameOnClick()
+void Lobby::clientOnClick()
 {
-    this->hide();
-    m = new MainWindow(1);
-    m->show();
+    host->hide();
+    client->hide();
+    bool ok;
+    QString text = QInputDialog::getText(0, "Input IP", "Input Host IP Address:", QLineEdit::Normal,"", &ok);
+     info->setText(QString("Connecting to %1...").arg(text));
 }
 
-void Lobby::lanGameOnClick()
-{
-    this->hide();
-    m = new MainWindow(2);
-    m->show();
-}

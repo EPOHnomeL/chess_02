@@ -1,11 +1,12 @@
 #include "chessgame.h"
 #include "rulemanager.h"
 
-ChessGame::ChessGame(bool onePlayer, QObject *parent) : QObject(parent)
+ChessGame::ChessGame(bool onePlayer,bool LAN, QObject *parent) : QObject(parent)
 {
     board = new ChessBoard();
     setupPieces();
     this->onePlayer = onePlayer;
+    this->LAN = LAN;
     select = {-1, -1};
     whitesTurn = true;
     canCastle[0] = true;
@@ -97,7 +98,15 @@ void ChessGame::userClickedSquare(Pos pos)
         piece->setPos(pos);
         state[pos.x][pos.y] = state[select.x][select.y];
         state[select.x][select.y] = nullptr;
-        afterMove(select, pos);
+
+        emit turnChange(getMoveNotation(select, pos), whitesTurn);
+
+        if (onePlayer){
+            afterMoveForAI(select, pos);
+        }
+        if(LAN){
+            afterMoveForLAN(select, pos);
+        }
 
         select = {-1, -1};
 
@@ -169,10 +178,9 @@ void ChessGame::setupPieces()
     }
 }
 
-void ChessGame::afterMove(Pos from, Pos to)
+void ChessGame::afterMoveForAI(Pos from, Pos to)
 {
-    emit turnChange(getMoveNotation(from, to), whitesTurn);
-    if(onePlayer && !aiTurn)
+    if(!aiTurn)
     {
         // AI stuff here
         Move move;
@@ -211,6 +219,11 @@ void ChessGame::afterMove(Pos from, Pos to)
         aiTurn = false;
 
     }
+}
+
+void ChessGame::afterMoveForLAN(Pos from, Pos to)
+{
+
 }
 
 QString ChessGame::getMoveNotation(Pos from, Pos to)
