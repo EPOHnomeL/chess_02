@@ -14,25 +14,29 @@ SOURCES += \
     checkmanager.cpp \
     chessboard.cpp \
     chessgame.cpp \
+    client.cpp \
     lobby.cpp \
     main.cpp \
     mainmenu.cpp \
     mainwindow.cpp \
     mygraphicsscene.cpp \
     piece.cpp \
-    rulemanager.cpp
+    rulemanager.cpp \
+    server.cpp
 
 HEADERS += \
     api.h \
     checkmanager.h \
     chessboard.h \
     chessgame.h \
+    client.h \
     lobby.h \
     mainmenu.h \
     mainwindow.h \
     mygraphicsscene.h \
     piece.h \
     rulemanager.h \
+    server.h \
     types.h
 
 FORMS += \

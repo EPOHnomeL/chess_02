@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QPushButton>
 #include "mainwindow.h"
+#include "server.h"
+#include "client.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -23,10 +25,21 @@ public slots:
     void hostOnClick();
     void clientOnClick();
 
+private slots:
+    void makeClient();
+    void makeServer();
+    void clientSend();
+    void receive(QByteArray);
+
 private:
+    Server *server;
+    Client *client;
+    QTextEdit *input;
+    QLabel *output;
+
     MainWindow *m;
     Ui::Lobby *ui;
-    QPushButton *host, *client;
+    QPushButton *hostButton, *clientButton;
     QLabel *info;
 
 };
