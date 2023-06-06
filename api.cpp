@@ -50,6 +50,10 @@ QJsonObject Api::post(QString apiCall, QString postData)
 void Api::setupOnePlayer()
 {
     QJsonObject res = get("one");
+    if(res.isEmpty()){
+        qDebug()<< "Could not initialize server, check DB";
+        return;
+    }
     gameId = res.value("game_id").toString();
 }
 

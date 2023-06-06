@@ -36,12 +36,13 @@ const QString piecesNames[6] =
         "queen",
         "king"};
 
+const QString b_starting[2][8] = {
+    {"rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook"},
+    {"pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn"}};
+
 const QString w_starting[2][8] = {
     {"pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn"},
     {"rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook"}};
 
-const QString b_starting[2][8] = {
-    {"rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook"},
-    {"pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn"}};
 
 #endif // TYPES_H

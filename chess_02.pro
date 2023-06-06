@@ -15,6 +15,7 @@ SOURCES += \
     chessboard.cpp \
     chessgame.cpp \
     main.cpp \
+    mainmenu.cpp \
     mainwindow.cpp \
     mygraphicsscene.cpp \
     piece.cpp \
@@ -25,6 +26,7 @@ HEADERS += \
     checkmanager.h \
     chessboard.h \
     chessgame.h \
+    mainmenu.h \
     mainwindow.h \
     mygraphicsscene.h \
     piece.h \
@@ -32,6 +34,7 @@ HEADERS += \
     types.h
 
 FORMS += \
+    mainmenu.ui \
     mainwindow.ui
 
 # Default rules for deployment.

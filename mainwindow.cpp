@@ -3,11 +3,20 @@
 #include "chessgame.h"
 #include <QPushButton>
 
-MainWindow::MainWindow(QWidget *parent)
+MainWindow::MainWindow(int gameType, QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    onePlayer = true;
+    switch (gameType) {
+    case 0: onePlayer = true;
+        break;
+    case 1: onePlayer = false;
+        break;
+    case 2 : onePlayer = false;
+        break;
+    default:
+        break;
+    }
     if(onePlayer)
     {
         apiProcess = new QProcess(this);

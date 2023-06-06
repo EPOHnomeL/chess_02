@@ -6,12 +6,13 @@
         <file>img/b_pawn.png</file>
         <file>img/b_queen.png</file>
         <file>img/b_rook.png</file>
-        <file>img/valid.png</file>
         <file>img/w_bishop.png</file>
         <file>img/w_king.png</file>
         <file>img/w_knight.png</file>
         <file>img/w_pawn.png</file>
         <file>img/w_queen.png</file>
         <file>img/w_rook.png</file>
+        <file>img/background.jpeg</file>
+        <file>img/Title.jpeg</file>
     </qresource>
 </RCC>

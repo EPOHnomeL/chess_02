@@ -108,7 +108,6 @@ void ChessGame::userClickedSquare(Pos pos)
             return;
         }
         whitesTurn = !whitesTurn;
-
     }
 }
 
@@ -198,6 +197,12 @@ void ChessGame::afterMove(Pos from, Pos to)
         }
 
         Piece *piece = state[aiMove.from.x][aiMove.from.y];
+        if(piece == nullptr)
+        {
+            qInfo()<<"ERROR from: "<< aiMove.from.toString() << " to: " <<aiMove.to.toString();
+            // Retry move?
+            return;
+        }
         piece->setPos(aiMove.to);
         state[aiMove.to.x][aiMove.to.y] = state[aiMove.from.x][aiMove.from.y];
         state[aiMove.from.x][aiMove.from.y] = nullptr;
