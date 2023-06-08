@@ -6,6 +6,7 @@
 #include "mainwindow.h"
 #include "server.h"
 #include "client.h"
+#include "networking.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -26,16 +27,14 @@ public slots:
     void clientOnClick();
 
 private slots:
-    void makeClient();
-    void makeServer();
-    void clientSend();
-    void receive(QByteArray);
+    void serverReceive(QByteArray);
+    void clientReceive(QByteArray);
 
 private:
     Server *server;
     Client *client;
-    QTextEdit *input;
-    QLabel *output;
+    QString username;
+    Networking *n;
 
     MainWindow *m;
     Ui::Lobby *ui;

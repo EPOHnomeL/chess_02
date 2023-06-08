@@ -13,13 +13,16 @@
 #include "checkmanager.h"
 #include "rulemanager.h"
 #include "api.h"
+#include "networking.h"
+
+class Networking;
 
 class ChessGame : public QObject
 {
     Q_OBJECT
 public:
     explicit ChessGame(bool onePlayer, bool LAN, QObject *parent = nullptr);
-
+    void setNetworking(Networking *n);
     ChessBoard *getBoard() const;
 
 signals:
@@ -30,15 +33,17 @@ signals:
 private slots:
     void userClickedSquare(Pos pos);
     void promotePawn(Pos pos);
+    void receive(QByteArray data);
 
 private:
     bool inGame;
-    bool onePlayer, LAN;
+    bool onePlayer, LAN, canMove;
     bool aiTurn;
     const QColor selectedPiece = QColor(0, 0, 0);
     const QColor validSquare = QColor(50, 50, 50);
     Pos select;
     CheckManager *cm;
+    Networking *n;
     QVector<Pos> *validMoves;
     ChessBoard *board;
     Piece *state[8][8];
@@ -49,6 +54,8 @@ private:
     void afterMoveForAI(Pos from, Pos to);
     void afterMoveForLAN(Pos from, Pos to);
     QString getMoveNotation(Pos from, Pos to);
+    Move stringToMove(QString str);
+    QString posToString(Pos p);
     Api* api;
     QNetworkAccessManager *netManager;
     QNetworkReply *netReply;

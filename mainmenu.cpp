@@ -37,6 +37,4 @@ void MainMenu::lanGameOnClick()
     this->hide();
     l = new Lobby();
     l->show();
-//    m = new MainWindow(2);
-//    m->show();
 }

@@ -29,6 +29,18 @@ ChessGame::ChessGame(bool onePlayer,bool LAN, QObject *parent) : QObject(parent)
             (&ChessGame::promotePawn));
 }
 
+void ChessGame::setNetworking(Networking *n)
+{
+    this->n = n;
+    if(n->isServer){
+        canMove = true;
+        connect(n->getServer(), SIGNAL(dataReceived(QByteArray)), this, SLOT(receive(QByteArray)));
+    } else {
+        canMove = false;
+        connect(n->getClient(), SIGNAL(dataReceived(QByteArray)), this, SLOT(receive(QByteArray)));
+    }
+}
+
 ChessBoard *ChessGame::getBoard() const
 {
     return board;
@@ -40,7 +52,7 @@ void ChessGame::userClickedSquare(Pos pos)
     Piece *piece = state[pos.x][pos.y];
 
     //    qInfo()<< "selected x: "<< pos.x<<"  y: "<<pos.y;
-    if ((piece == nullptr && (select == (Pos){-1, -1})) || (select == pos) || !inGame)
+    if ((piece == nullptr && (select == (Pos){-1, -1})) || (select == pos) || !inGame || (LAN &!canMove))
     {
         return;
     }
@@ -81,6 +93,7 @@ void ChessGame::userClickedSquare(Pos pos)
             }
             else
             {
+                emit pieceTaken(enemy);
                 delete enemy;
                 state[pos.x][pos.y] = nullptr;
             }
@@ -95,10 +108,10 @@ void ChessGame::userClickedSquare(Pos pos)
             }
 
         piece = state[select.x][select.y];
+
         piece->setPos(pos);
         state[pos.x][pos.y] = state[select.x][select.y];
         state[select.x][select.y] = nullptr;
-
         emit turnChange(getMoveNotation(select, pos), whitesTurn);
 
         if (onePlayer){
@@ -116,7 +129,9 @@ void ChessGame::userClickedSquare(Pos pos)
             inGame = false;
             return;
         }
+
         whitesTurn = !whitesTurn;
+
     }
 }
 
@@ -135,6 +150,51 @@ void ChessGame::promotePawn(Pos pos)
         QGraphicsPixmapItem *png = board->putPieceAt(piece, pos);
         state[pos.x][pos.y] = new Piece("queen", pos, false, png);
     }
+}
+
+void ChessGame::receive(QByteArray data)
+{
+    Move m = stringToMove(data);
+
+    Pos pos = m.to;
+    Piece *piece = state[m.from.x][m.from.y];
+
+    Piece *enemy = state[pos.x][pos.y];
+    if (enemy != nullptr)
+    {
+        if (enemy->getColor() == whitesTurn)
+        {
+            return;
+        }
+        else
+        {
+            emit pieceTaken(enemy);
+            delete enemy;
+            state[pos.x][pos.y] = nullptr;
+        }
+    }
+
+    if(canCastle[whitesTurn])
+        if (state[m.from.x][m.from.y]->getType() == "king")
+        {
+            checkCastle(state[m.from.x][m.from.y], pos);
+            canCastle[whitesTurn] = false;
+            cm->getRm()->canCastle[whitesTurn] = false;
+        }
+
+    piece->setPos(pos);
+    state[pos.x][pos.y] = state[m.from.x][m.from.y];
+    state[m.from.x][m.from.y] = nullptr;
+    emit turnChange(getMoveNotation(m.from, pos), whitesTurn);
+
+    if (cm->checkCheckMate(state, !whitesTurn))
+    {
+        emit gameFinished("Checkmate", whitesTurn);
+        inGame = false;
+        return;
+    }
+    whitesTurn = !whitesTurn;
+    canMove = true;
 }
 
 void ChessGame::checkCastle(Piece *king, Pos to)
@@ -217,13 +277,18 @@ void ChessGame::afterMoveForAI(Pos from, Pos to)
         whitesTurn = !whitesTurn;
         emit turnChange(getMoveNotation(aiMove.from, aiMove.to), whitesTurn);
         aiTurn = false;
-
     }
 }
 
 void ChessGame::afterMoveForLAN(Pos from, Pos to)
 {
-
+    canMove = false;
+    QString msg = posToString(from) + posToString(to);
+    if(n->isServer){
+        n->serverSend(msg);
+    } else {
+        n->clientSend(msg);
+    }
 }
 
 QString ChessGame::getMoveNotation(Pos from, Pos to)
@@ -243,6 +308,18 @@ QString ChessGame::getMoveNotation(Pos from, Pos to)
         }
     }
     return "none";
+}
+
+Move ChessGame::stringToMove(QString str)
+{
+    Move m = Move{Pos{-str[1].toLatin1()+56, str[0].toLatin1()-65}, Pos{-str[3].toLatin1()+56, str[2].toLatin1()-65}};
+    return m;
+}
+
+QString ChessGame::posToString(Pos p)
+{
+    QString s = QString(char(p.y+65)) + QString(char(56-p.x));
+    return s;
 }
 
 

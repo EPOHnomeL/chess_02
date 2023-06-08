@@ -20,6 +20,7 @@ SOURCES += \
     mainmenu.cpp \
     mainwindow.cpp \
     mygraphicsscene.cpp \
+    networking.cpp \
     piece.cpp \
     rulemanager.cpp \
     server.cpp
@@ -34,6 +35,7 @@ HEADERS += \
     mainmenu.h \
     mainwindow.h \
     mygraphicsscene.h \
+    networking.h \
     piece.h \
     rulemanager.h \
     server.h \

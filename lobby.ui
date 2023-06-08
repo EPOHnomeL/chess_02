@@ -80,14 +80,22 @@
      <rect>
       <x>30</x>
       <y>290</y>
-      <width>571</width>
-      <height>21</height>
+      <width>451</width>
+      <height>221</height>
      </rect>
     </property>
     <property name="text">
      <string/>
     </property>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+    </property>
    </widget>
+   <zorder>label</zorder>
+   <zorder>label_2</zorder>
+   <zorder>info</zorder>
+   <zorder>host</zorder>
+   <zorder>client</zorder>
   </widget>
  </widget>
  <resources/>

@@ -6,10 +6,13 @@
 
 Lobby::Lobby(QWidget *parent) : QMainWindow(parent), ui(new Ui::Lobby)
 {
+    n = new Networking(this);
     ui->setupUi(this);
     clientButton = ui->client;
     hostButton = ui->host;
     info = ui->info;
+//    bool ok;
+    username = "SAMENAME";//QInputDialog::getText(0, "CHAESS", "Input username:", QLineEdit::Normal,"", &ok);
     connect(hostButton, &QPushButton::clicked, this, &Lobby::hostOnClick);
     connect(clientButton, &QPushButton::clicked, this, &Lobby::clientOnClick);
 }
@@ -28,44 +31,47 @@ void Lobby::hostOnClick()
 {
     hostButton->hide();
     clientButton->hide();
-    QTcpSocket socket;
-    socket.connectToHost("8.8.8.8", 53); // google DNS, or something else reliable
-    if (socket.waitForConnected()) {
-        info->setText(QString("Waiting for players to connect to %1...").arg(socket.localAddress().toString()));
-    } else {
-        qWarning()
-            << "could not determine local IPv4 address:"
-            << socket.errorString();
-    }
-    server = new Server;
-    connect(server, SIGNAL(dataReceived(QByteArray)), this, SLOT(receive(QByteArray)));
+    QString ip = n->createServer();
+    info->setText(QString("Waiting for player to connect to %1").arg(ip));
+    connect(n->getServer(), SIGNAL(dataReceived(QByteArray)), this, SLOT(serverReceive(QByteArray)));
 }
 
 void Lobby::clientOnClick()
 {
-    hostButton->hide();
-    clientButton->hide();
-    bool ok;
-    QString text = QInputDialog::getText(0, "Input IP", "Input Host IP Address:", QLineEdit::Normal,"", &ok);
+//    bool ok;
+    QString text = "192.168.1.21";//QInputDialog::getText(0, "Input IP", "Input Host IP Address:", QLineEdit::Normal,"", &ok);
      info->setText(QString("Connecting to %1...").arg(text));
-
-     client = new Client;
-     connect(client, SIGNAL(dataReceived(QByteArray)), this, SLOT(receive(QByteArray)));
-     if (!client->connectToHost(text))
-     {
-         client->deleteLater();
-         return;
+     // Create client and connect to input
+     if(!n->createClient(text)){
+         qWarning() << "That did'nt work";
      }
+     hostButton->hide();
+     clientButton->hide();
+     connect(n->getClient(), SIGNAL(dataReceived(QByteArray)), this, SLOT(clientReceive(QByteArray)));
+     // Send data through client
+     n->clientSend(username);
 }
 
-void Lobby::clientSend()
+void Lobby::serverReceive(QByteArray data)
 {
-    client->writeData(input->toPlainText().toUtf8());
+    info->setText("Users conneted: \n" + username + " (host)\n" + data + " (client) ");
+    n->setUsernames(username, data);
+    n->serverSend(username.toUtf8());
+    m = new MainWindow(2, this);
+    m->setNetworking(n);
+    m->show();
+    this->hide();
+    disconnect(n->getServer(), SIGNAL(dataReceived(QByteArray)), this, SLOT(serverReceive(QByteArray)));
 }
 
-void Lobby::receive(QByteArray data)
+void Lobby::clientReceive(QByteArray data)
 {
-    if (output)
-        output->setText(output->text() + "\n" + data);
+    info->setText("Users conneted: \n" + data + " (host)\n" + username + " (client)");
+        n->setUsernames(data, username);
+    m = new MainWindow(2, this);
+    m->setNetworking(n);
+    m->show();
+    this->hide();
+    disconnect(n->getClient(), SIGNAL(dataReceived(QByteArray)), this, SLOT(clientReceive(QByteArray)));
 }
 

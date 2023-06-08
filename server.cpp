@@ -14,7 +14,7 @@ void Server::newConnection()
 {
     while (server->hasPendingConnections())
     {
-        QTcpSocket *socket = server->nextPendingConnection();
+        socket = server->nextPendingConnection();
         connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
         connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
         QByteArray *buffer = new QByteArray();
@@ -26,7 +26,6 @@ void Server::newConnection()
 
 void Server::disconnected()
 {
-    QTcpSocket *socket = static_cast<QTcpSocket*>(sender());
     QByteArray *buffer = buffers.value(socket);
     buffers.remove(socket);
     qint32 *s = sizes.value(socket);
@@ -36,9 +35,21 @@ void Server::disconnected()
     delete s;
 }
 
+bool Server::writeData(QByteArray data)
+{
+    if(socket->state() == QAbstractSocket::ConnectedState)
+    {
+        socket->write(IntToArray(data.size())); //write size of data
+        socket->write(data); //write the data itself
+        qDebug() << "Server wrote: " << data;
+        return socket->waitForBytesWritten();
+    }
+    else
+        return false;
+}
+
 void Server::readyRead()
 {
-    QTcpSocket *socket = static_cast<QTcpSocket*>(sender());
     QByteArray *buffer = buffers.value(socket);
     qint32 *s = sizes.value(socket);
     qint32 size = *s;
@@ -60,14 +71,7 @@ void Server::readyRead()
                 size = 0;
                 *s = size;
                 emit dataReceived(data);
-
-                QByteArray txdata = "dankie";
-                if(socket->state() == QAbstractSocket::ConnectedState)
-                {
-                    socket->write(IntToArray(txdata.size())); //write size of data
-                    socket->write(txdata); //write the data itself
-                    socket->waitForBytesWritten();
-                }
+                buffer->clear();
             }
         }
     }

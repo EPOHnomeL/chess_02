@@ -1,19 +1,18 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "chessgame.h"
+
 #include <QPushButton>
 
 MainWindow::MainWindow(int gameType, QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
 {
+    LAN = false;
+    onePlayer = false;
     ui->setupUi(this);
     switch (gameType) {
     case 0: onePlayer = true;
         break;
-    case 1: onePlayer = false;
-        break;
-    case 2 : {onePlayer = false;
-              LAN = true;}
+    case 2 : LAN = true;
         break;
     default:
         break;
@@ -23,11 +22,15 @@ MainWindow::MainWindow(int gameType, QWidget *parent)
         apiProcess = new QProcess(this);
         apiProcess->start("\"C:\\Program Files\\nodejs\\node.exe\"", QStringList() << "C:\\Code\\C++\\Qt\\chess_02\\chess-api\\index.js");
     }
-    ChessGame *chessGame = new ChessGame(onePlayer, LAN, this);
+
+    takenPieces = new QVector<Piece*>();
+
+    chessGame = new ChessGame(onePlayer, LAN, this);
     moveCount = 1;
 
     connect(chessGame, &ChessGame::turnChange, this, &MainWindow::turnChange);
     connect(chessGame, &ChessGame::gameFinished, this, &MainWindow::gameFinished);
+    connect(chessGame, &ChessGame::pieceTaken, this, &MainWindow::pieceTaken);
     QWidget *centralWidget = new QWidget(this);
     QHBoxLayout *mainLayout = new QHBoxLayout();
     centralWidget->setLayout(mainLayout);
@@ -35,26 +38,34 @@ MainWindow::MainWindow(int gameType, QWidget *parent)
 
     QVBoxLayout *infoLayout = new QVBoxLayout();
 
-    turnLabel = new QLabel("Turn : ⬜");
     QFont f = QFont("MS Shell Dlg 2", 15, 2);
     f.setBold(true);
+    turnLabel = new QLabel(QString("White's Turn"));
     turnLabel->setFont(f);
-
+    user1 = new QLabel(QString("Piet Snoek"));
+    user1->setFont(f);
+    user2 = new QLabel(QString("Gerrie Kerrie"));
+    user2->setFont(f);
     piecesLostView = new QGraphicsView();
-    piecesLostView->setScene(new QGraphicsScene());
-    piecesLostView->setMinimumHeight(280);
+    scene = new QGraphicsScene();
+    piecesLostView->setScene(scene);
+    piecesLostView->setMinimumHeight(380);
 
     te = new QTextEdit();
     te->setReadOnly(true);
-    te->setMinimumHeight(0);
+    te->setMinimumHeight(380);
 
-    infoLayout->addWidget(turnLabel);
-    infoLayout->setAlignment(turnLabel,Qt::AlignTop);
+    infoLayout->addWidget(user1);
+    infoLayout->setAlignment(user1,Qt::AlignTop);
     infoLayout->addWidget(te);
-    infoLayout->setAlignment(te,Qt::AlignTrailing);
+    infoLayout->setAlignment(te,Qt::AlignBottom);
+    infoLayout->addWidget(turnLabel);
+    infoLayout->setAlignment(turnLabel,Qt::AlignHCenter);
     infoLayout->addWidget(piecesLostView);
-    infoLayout->setAlignment(piecesLostView,Qt::AlignVCenter);
-    infoLayout->addItem(new QSpacerItem(250, 200));
+    infoLayout->setAlignment(piecesLostView,Qt::AlignTop);
+    infoLayout->addItem(new QSpacerItem(250, 0));
+    infoLayout->addWidget(user2);
+    infoLayout->setAlignment(user2,Qt::AlignTop);
 
     mainLayout->setAlignment(chessGame->getBoard(),Qt::AlignLeft);
     mainLayout->addLayout(infoLayout);
@@ -72,23 +83,42 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::setNetworking(Networking *n)
+{
+    chessGame->setNetworking(n);
+    user1->setText(n->getUsername(0));
+    user2->setText(n->getUsername(1));
+}
+
 void MainWindow::turnChange(QString move, bool player)
 {
     if(player)
     {
-        turnLabel->setText("Turn : ⬛");
+        turnLabel->setText("Black's Turn");
+        turnLabel->setStyleSheet("QLabel { background-color : black; color : white; }");
         te->setText(te->toPlainText() + QString("%1. ").arg(moveCount) + move);
         moveCount++;
     }
     else
     {
-        turnLabel->setText("Turn : ⬜");
+        turnLabel->setStyleSheet("QLabel { background-color : white; color : black; }");
+        turnLabel->setText("White's Turn");
         te->setText(te->toPlainText() + "\t" + move + "\n");
     }
+}
+
+void MainWindow::pieceTaken(Piece *p)
+{
+
+    QImage *image = new QImage(QString(":img/%1_%2.png").arg(p->getColor() ? "w": "b").arg(p->getType()));
+    QPixmap pix = QPixmap::fromImage(*image).scaled(80, 80, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    QGraphicsPixmapItem *png = scene->addPixmap(pix); // Add pointer to array
+    takenPieces->append(p);
+    png->setPos(17 + (takenPieces->length() * 30), 13 + ((p->getColor() ? 0 : 250)));
 }
 
 void MainWindow::gameFinished(QString reason, bool player)
 {
     if(reason == "Checkmate")
-        turnLabel->setText(player ? "⬜ WON": "⬛ WON");
+        turnLabel->setText(player ? "WHITE WON": "BLACK WON");
 }
