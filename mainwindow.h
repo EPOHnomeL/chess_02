@@ -32,10 +32,11 @@ private slots:
     void turnChange(QString move, bool player);
     void pieceTaken(Piece *p);
     void gameFinished(QString reason, bool player);
+    void timertick();
 
 private:
     Ui::MainWindow *ui;
-    int moveCount;
+    int moveCount, z;
     bool onePlayer, LAN;
     Networking *n;
     ChessGame *chessGame;
@@ -45,6 +46,7 @@ private:
     QVector<Piece*> *takenPieces;
     QTextEdit *te;
     QGraphicsScene *scene;
+    QTimer *timer;
     QGraphicsView *piecesLostView;
 };
 #endif // MAINWINDOW_H

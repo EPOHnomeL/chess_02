@@ -1,5 +1,6 @@
 #include "chessgame.h"
 #include "rulemanager.h"
+#include <QMessageBox>
 
 ChessGame::ChessGame(bool onePlayer,bool LAN, QObject *parent) : QObject(parent)
 {
@@ -17,7 +18,11 @@ ChessGame::ChessGame(bool onePlayer,bool LAN, QObject *parent) : QObject(parent)
     if(onePlayer)
     {
         api = new Api();
-        api->setupOnePlayer();
+        if(!api->setupOnePlayer()){
+            QMessageBox msgBox;
+            msgBox.setText("ERROR: Database not initalized");
+            msgBox.exec();
+        }
     }
     connect(board->getScene(),
             (&MyGraphicsScene::userClick),

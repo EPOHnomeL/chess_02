@@ -17,6 +17,8 @@ public:
     MyGraphicsScene *getScene() const;
     void toggleSquare(Pos pos, bool isSelect);
     void SetInfoText(QString s);
+    void changeSquaresColors();
+    void setSquaresColors();
 
 private:
     const QColor colors[2] = {QColor(121, 72, 57), QColor(93, 50, 49)};

@@ -21,12 +21,15 @@ MainWindow::MainWindow(int gameType, QWidget *parent)
     {
         apiProcess = new QProcess(this);
         apiProcess->start("\"C:\\Program Files\\nodejs\\node.exe\"", QStringList() << "C:\\Code\\C++\\Qt\\chess_02\\chess-api\\index.js");
+        dbProcess = new QProcess(this);
+        dbProcess->start("\"mongod\"", QStringList() << "");
     }
 
     takenPieces = new QVector<Piece*>();
 
     chessGame = new ChessGame(onePlayer, LAN, this);
     moveCount = 1;
+    z = 0;
 
     connect(chessGame, &ChessGame::turnChange, this, &MainWindow::turnChange);
     connect(chessGame, &ChessGame::gameFinished, this, &MainWindow::gameFinished);
@@ -111,14 +114,39 @@ void MainWindow::pieceTaken(Piece *p)
 {
 
     QImage *image = new QImage(QString(":img/%1_%2.png").arg(p->getColor() ? "w": "b").arg(p->getType()));
-    QPixmap pix = QPixmap::fromImage(*image).scaled(80, 80, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    QPixmap pix = QPixmap::fromImage(*image).scaled(50, 50, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     QGraphicsPixmapItem *png = scene->addPixmap(pix); // Add pointer to array
     takenPieces->append(p);
-    png->setPos(17 + (takenPieces->length() * 30), 13 + ((p->getColor() ? 0 : 250)));
+    int b = 0;
+    int w = 0;
+    for (int i=0; i<takenPieces->length()-1 ; i++) {
+        if(takenPieces->at(i)->getColor()){
+            w++;
+        }else{
+            b++;
+        }
+    }
+    png->setPos(17 + ((p->getColor() ? w : b) * 20), 13 + ((p->getColor() ? 0 : 200)));
 }
 
 void MainWindow::gameFinished(QString reason, bool player)
 {
-    if(reason == "Checkmate")
+    if(reason == "Checkmate"){
         turnLabel->setText(player ? "WHITE WON": "BLACK WON");
+        chessGame->getBoard()->setSquaresColors();
+        timer = new QTimer(this);
+        connect(timer, SIGNAL(timeout()), this, SLOT(timertick()));
+        timer->setInterval(1);
+        timer->start();
+    }
+}
+
+void MainWindow::timertick()
+{
+    z++;
+    chessGame->getBoard()->changeSquaresColors();
+    if(z == 750){
+     z = 0;
+     chessGame->getBoard()->setSquaresColors();
+    }
 }

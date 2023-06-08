@@ -15,7 +15,7 @@ class Api : public QObject
     Q_OBJECT
 public:
     explicit Api(QObject *parent = nullptr);
-    void setupOnePlayer();
+    bool setupOnePlayer();
     void setupLANHost();
     void setupLANClient(QString url);
     void tryMakeMove(Move move);

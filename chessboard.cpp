@@ -63,6 +63,32 @@ void ChessBoard::SetInfoText(QString s)
     label->setText(s);
 }
 
+void ChessBoard::changeSquaresColors()
+{
+    for (int i = 0; i < 8; ++i)
+    {
+        for (int j = 0; j < 8; ++j)
+        {
+            QString s = squares[i][j]->brush().color().name();
+            s.remove('#');
+            bool bStatus = false;
+            uint64_t val = s.toUInt(&bStatus, 16);
+            squares[i][j]->setBrush(QBrush(val + 1));
+        }
+    }
+}
+
+void ChessBoard::setSquaresColors()
+{
+    for (int i = 0; i < 8; ++i)
+    {
+        for (int j = 0; j < 8; ++j)
+        {
+            squares[i][j]->setBrush(QBrush((rand()*rand()*rand())));
+        }
+    }
+}
+
 void ChessBoard::toggleSquare(Pos _pos, bool isSelect)
 {
     Pos pos = {_pos.y, _pos.x};
