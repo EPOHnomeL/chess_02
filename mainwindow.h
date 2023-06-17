@@ -27,6 +27,7 @@ public:
     MainWindow(int gameType, QWidget *parent = nullptr);
     ~MainWindow();
     void setNetworking(Networking *n);
+    void setUsernames(QString one, QString two);
 
 private slots:
     void turnChange(QString move, bool player);
@@ -37,6 +38,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     int moveCount, z;
+    QString usernames[2];
     bool onePlayer, LAN;
     Networking *n;
     ChessGame *chessGame;

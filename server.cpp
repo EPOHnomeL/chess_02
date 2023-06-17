@@ -41,7 +41,6 @@ bool Server::writeData(QByteArray data)
     {
         socket->write(IntToArray(data.size())); //write size of data
         socket->write(data); //write the data itself
-        qDebug() << "Server wrote: " << data;
         return socket->waitForBytesWritten();
     }
     else

@@ -21,8 +21,6 @@ MainWindow::MainWindow(int gameType, QWidget *parent)
     {
         apiProcess = new QProcess(this);
         apiProcess->start("\"C:\\Program Files\\nodejs\\node.exe\"", QStringList() << "C:\\Code\\C++\\Qt\\chess_02\\chess-api\\index.js");
-        dbProcess = new QProcess(this);
-        dbProcess->start("\"mongod\"", QStringList() << "");
     }
 
     takenPieces = new QVector<Piece*>();
@@ -34,6 +32,7 @@ MainWindow::MainWindow(int gameType, QWidget *parent)
     connect(chessGame, &ChessGame::turnChange, this, &MainWindow::turnChange);
     connect(chessGame, &ChessGame::gameFinished, this, &MainWindow::gameFinished);
     connect(chessGame, &ChessGame::pieceTaken, this, &MainWindow::pieceTaken);
+
     QWidget *centralWidget = new QWidget(this);
     QHBoxLayout *mainLayout = new QHBoxLayout();
     centralWidget->setLayout(mainLayout);
@@ -89,8 +88,15 @@ MainWindow::~MainWindow()
 void MainWindow::setNetworking(Networking *n)
 {
     chessGame->setNetworking(n);
-    user1->setText(n->getUsername(0));
-    user2->setText(n->getUsername(1));
+    setUsernames(n->getUsername(0), n->getUsername(1));
+}
+
+void MainWindow::setUsernames(QString one, QString two)
+{
+    usernames[0] = one;
+    usernames[1] = two;
+    user1->setText(one);
+    user2->setText(two);
 }
 
 void MainWindow::turnChange(QString move, bool player)

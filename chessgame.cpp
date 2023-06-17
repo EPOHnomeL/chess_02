@@ -72,6 +72,7 @@ void ChessGame::userClickedSquare(Pos pos)
 
         if (validMoves == nullptr || validMoves->size() == 0)
             return;
+
         select = pos;
         board->toggleSquare(pos, true);
         for (int i = 0; i < validMoves->size(); i++)
@@ -116,6 +117,7 @@ void ChessGame::userClickedSquare(Pos pos)
 
         piece->setPos(pos);
         state[pos.x][pos.y] = state[select.x][select.y];
+
         state[select.x][select.y] = nullptr;
         emit turnChange(getMoveNotation(select, pos), whitesTurn);
 
@@ -124,6 +126,7 @@ void ChessGame::userClickedSquare(Pos pos)
         }
         if(LAN){
             afterMoveForLAN(select, pos);
+            changeSides();
         }
 
         select = {-1, -1};
@@ -264,6 +267,8 @@ void ChessGame::afterMoveForAI(Pos from, Pos to)
             }
             else
             {
+
+                emit pieceTaken(enemy);
                 delete enemy;
                 state[aiMove.to.x][aiMove.to.x] = nullptr;
             }
@@ -313,6 +318,14 @@ QString ChessGame::getMoveNotation(Pos from, Pos to)
         }
     }
     return "none";
+}
+
+void ChessGame::changeSides()
+{
+    for(int i=0;i<8;i++){
+//        Piece *t[8] = state[4-i]
+//        state[i]
+    }
 }
 
 Move ChessGame::stringToMove(QString str)

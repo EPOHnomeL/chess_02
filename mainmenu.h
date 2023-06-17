@@ -28,6 +28,7 @@ public slots:
 private:
     MainWindow *m;
     Lobby *l;
+    QProcess *dbProcess;
     Ui::MainMenu *ui;
     QPushButton *single, *local, *lan;
 

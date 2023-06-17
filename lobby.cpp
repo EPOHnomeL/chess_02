@@ -11,8 +11,8 @@ Lobby::Lobby(QWidget *parent) : QMainWindow(parent), ui(new Ui::Lobby)
     clientButton = ui->client;
     hostButton = ui->host;
     info = ui->info;
-//    bool ok;
-    username = "SAMENAME";//QInputDialog::getText(0, "CHAESS", "Input username:", QLineEdit::Normal,"", &ok);
+    bool ok;
+    username = QInputDialog::getText(0, "CHAESS", "Input username:", QLineEdit::Normal,"", &ok);
     connect(hostButton, &QPushButton::clicked, this, &Lobby::hostOnClick);
     connect(clientButton, &QPushButton::clicked, this, &Lobby::clientOnClick);
 }
@@ -38,8 +38,8 @@ void Lobby::hostOnClick()
 
 void Lobby::clientOnClick()
 {
-//    bool ok;
-    QString text = "192.168.1.21";//QInputDialog::getText(0, "Input IP", "Input Host IP Address:", QLineEdit::Normal,"", &ok);
+    bool ok;
+    QString text = QInputDialog::getText(0, "Input IP", "Input Host IP Address:", QLineEdit::Normal,"", &ok);
      info->setText(QString("Connecting to %1...").arg(text));
      // Create client and connect to input
      if(!n->createClient(text)){

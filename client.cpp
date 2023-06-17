@@ -24,7 +24,6 @@ bool Client::writeData(QByteArray data)
     {
         socket->write(IntToArray(data.size())); //write size of data
         socket->write(data); //write the data itself
-        qDebug() << "Client wrote: " << data;
         return socket->waitForBytesWritten();
     }
     else
