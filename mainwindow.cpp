@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+
 #include <QPushButton>
 
 MainWindow::MainWindow(int gameType, QWidget *parent)
@@ -20,7 +21,7 @@ MainWindow::MainWindow(int gameType, QWidget *parent)
     if(onePlayer)
     {
         apiProcess = new QProcess(this);
-        apiProcess->start("\"C:\\Program Files\\nodejs\\node.exe\"", QStringList() << "C:\\Code\\C++\\Qt\\chess_02\\chess-api\\index.js");
+        apiProcess->start("\"node\"", QStringList() << "C:\\Code\\C++\\Qt\\chess_02\\chess-api\\index.js");
     }
 
     takenPieces = new QVector<Piece*>();
@@ -57,6 +58,8 @@ MainWindow::MainWindow(int gameType, QWidget *parent)
     te->setReadOnly(true);
     te->setMinimumHeight(380);
 
+    hs = new highscore(this);
+
     infoLayout->addWidget(user1);
     infoLayout->setAlignment(user1,Qt::AlignTop);
     infoLayout->addWidget(te);
@@ -91,7 +94,7 @@ void MainWindow::setNetworking(Networking *n)
     setUsernames(n->getUsername(0), n->getUsername(1));
 }
 
-void MainWindow::setUsernames(QString one, QString two)
+void MainWindow::setUsernames(QString two, QString one)
 {
     usernames[0] = one;
     usernames[1] = two;
@@ -144,6 +147,10 @@ void MainWindow::gameFinished(QString reason, bool player)
         connect(timer, SIGNAL(timeout()), this, SLOT(timertick()));
         timer->setInterval(1);
         timer->start();
+
+        // Log high scores into textfile
+        QString gameScore = QString("%1 1,%2 0").arg(usernames[player]).arg(usernames[!player]);
+        hs->writeFile("score.txt", gameScore);
     }
 }
 

@@ -54,7 +54,7 @@ private:
     void afterMoveForAI(Pos from, Pos to);
     void afterMoveForLAN(Pos from, Pos to);
     QString getMoveNotation(Pos from, Pos to);
-    void changeSides();
+    Move recursivlyAskForAIMove();
     Move stringToMove(QString str);
     QString posToString(Pos p);
     Api* api;

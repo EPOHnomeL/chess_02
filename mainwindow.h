@@ -8,6 +8,7 @@
 #include <QGraphicsView>
 #include "chessgame.h"
 #include "networking.h"
+#include "highscore.h"
 
 class Networking;
 class ChessGame;
@@ -36,6 +37,8 @@ private slots:
     void timertick();
 
 private:
+    const QString API_PATH = "C:\\Code\\C++\\Qt\\chess_02\\chess-api\\index.js";
+    highscore *hs;
     Ui::MainWindow *ui;
     int moveCount, z;
     QString usernames[2];

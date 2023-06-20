@@ -5,6 +5,7 @@
 #include <QPushButton>
 #include "mainwindow.h"
 #include "lobby.h"
+#include "highscore.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -24,13 +25,16 @@ public slots:
     void singlePlayerOnClick();
     void localGameOnClick();
     void lanGameOnClick();
+    void hsClick();
 
 private:
+    bool showHS;
     MainWindow *m;
     Lobby *l;
+    highscore *score;
     QProcess *dbProcess;
     Ui::MainMenu *ui;
-    QPushButton *single, *local, *lan;
+    QPushButton *single, *local, *lan, *hs;
 
 };
 

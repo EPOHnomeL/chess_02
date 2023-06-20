@@ -22,6 +22,13 @@ struct Move
 {
     Pos from;
     Pos to;
+    bool operator==(const Move &a)
+    {
+        if (from.x == a.from.x && from.y == a.from.y && to.x == a.to.x && to.y == a.to.y)
+            return true;
+        else
+            return false;
+    }
     QString toJsonString(){
         return QString("{\"from\":\"%1\",\"to\":\"%2\"}").arg(from.toString()).arg(to.toString());
     }

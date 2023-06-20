@@ -77,6 +77,9 @@ void Api::tryMakeMove(Move move)
 Move Api::aiMove()
 {
     QJsonObject res = post("one/move/ai", "");
+    if(res == QJsonObject()){
+        return Move{{0, 0}, {0, 0}};
+    }
     Move move;
     move.from = strToPos(res.value("from").toString());
     move.to = strToPos(res.value("to").toString());

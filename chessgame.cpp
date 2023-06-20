@@ -22,6 +22,7 @@ ChessGame::ChessGame(bool onePlayer,bool LAN, QObject *parent) : QObject(parent)
             QMessageBox msgBox;
             msgBox.setText("ERROR: Database not initalized");
             msgBox.exec();
+            qApp->exit();
         }
     }
     connect(board->getScene(),
@@ -126,7 +127,6 @@ void ChessGame::userClickedSquare(Pos pos)
         }
         if(LAN){
             afterMoveForLAN(select, pos);
-            changeSides();
         }
 
         select = {-1, -1};
@@ -255,7 +255,15 @@ void ChessGame::afterMoveForAI(Pos from, Pos to)
         move.from = from;
         move.to = to;
         api->tryMakeMove(move);
-        Move aiMove = api->aiMove();
+
+        Move aiMove = recursivlyAskForAIMove();
+
+        Piece *piece = state[aiMove.from.x][aiMove.from.y];
+        if(piece == nullptr)
+        {
+            qInfo()<<"ERROR from: "<< aiMove.from.toString() << " to: " <<aiMove.to.toString();
+            aiMove = recursivlyAskForAIMove();
+        }
         aiTurn = true;
 
         Piece *enemy = state[aiMove.to.x][aiMove.to.y];
@@ -267,20 +275,13 @@ void ChessGame::afterMoveForAI(Pos from, Pos to)
             }
             else
             {
-
                 emit pieceTaken(enemy);
                 delete enemy;
                 state[aiMove.to.x][aiMove.to.x] = nullptr;
             }
         }
 
-        Piece *piece = state[aiMove.from.x][aiMove.from.y];
-        if(piece == nullptr)
-        {
-            qInfo()<<"ERROR from: "<< aiMove.from.toString() << " to: " <<aiMove.to.toString();
-            // Retry move?
-            return;
-        }
+
         piece->setPos(aiMove.to);
         state[aiMove.to.x][aiMove.to.y] = state[aiMove.from.x][aiMove.from.y];
         state[aiMove.from.x][aiMove.from.y] = nullptr;
@@ -289,6 +290,16 @@ void ChessGame::afterMoveForAI(Pos from, Pos to)
         aiTurn = false;
     }
 }
+
+Move ChessGame::recursivlyAskForAIMove()
+{
+    Move aiMove = api->aiMove();
+    if(aiMove == Move{{0, 0}, {0, 0}}){
+        return recursivlyAskForAIMove();
+    }
+    return aiMove;
+}
+
 
 void ChessGame::afterMoveForLAN(Pos from, Pos to)
 {
@@ -318,14 +329,6 @@ QString ChessGame::getMoveNotation(Pos from, Pos to)
         }
     }
     return "none";
-}
-
-void ChessGame::changeSides()
-{
-    for(int i=0;i<8;i++){
-//        Piece *t[8] = state[4-i]
-//        state[i]
-    }
 }
 
 Move ChessGame::stringToMove(QString str)

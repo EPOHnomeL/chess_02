@@ -12,7 +12,7 @@ Lobby::Lobby(QWidget *parent) : QMainWindow(parent), ui(new Ui::Lobby)
     hostButton = ui->host;
     info = ui->info;
     bool ok;
-    username = QInputDialog::getText(0, "CHAESS", "Input username:", QLineEdit::Normal,"", &ok);
+    username = QInputDialog::getText(0, "CHAESS", "Input username (no spaces or commas):", QLineEdit::Normal,"", &ok);
     connect(hostButton, &QPushButton::clicked, this, &Lobby::hostOnClick);
     connect(clientButton, &QPushButton::clicked, this, &Lobby::clientOnClick);
 }
